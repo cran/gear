@@ -48,12 +48,12 @@ vgram = function(formula, data, coords = NULL, nbins = 10,
   y = stats::lm(formula, data = data)$resid
   
   dirname = "omnidirectional"
-  if(ndir >= 2) dirname = "directional"
-  cat(paste("Calculating", dirname,"sample semivariogram for", id, "variable using", type, "estimator"))
+  if (ndir >= 2) dirname = "directional"
+  message(paste("Calculating", dirname,"sample semivariogram for", id, "variable using", type, "estimator"))
   
   # create indexes to use in building of sample semivariograms
-  idx1 = rep(1:(N-1), times = (N-1):1)
-  idx2 = unlist(sapply(1:(N-1), function(i) (1:N)[-(1:i)]))
+  idx1 = rep(1:(N - 1), times = (N - 1):1)
+  idx2 = unlist(sapply(1:(N - 1), function(i) (1:N)[-(1:i)]))
 
   # distances for unique pairs of points
   # d2 = c(dist(coords)) 
@@ -126,6 +126,10 @@ vgram = function(formula, data, coords = NULL, nbins = 10,
   return(out)
 }
 
+#' Check arguments of vgram
+#' @return NULL
+#' @export
+#' @keywords internal
 vgram_check_args = function(formula, data, coords, nbins, maxd, 
                             angle, ndir, type, npmin)
 {
@@ -144,27 +148,30 @@ vgram_check_args = function(formula, data, coords, nbins, maxd,
     if(min(is.element(all.vars(coords), names(as.data.frame(data)))) == 0)
       stop("some of the variables in coords are not in data")
   }
-  if(nbins < 1 || length(nbins) != 1 || !is.numeric(nbins))
+  if(length(nbins) != 1 || !is.numeric(nbins) || nbins < 1)
     stop("nbins should be a single integer >= 1")
   if(!is.null(maxd))
   {
-    if(maxd <= 0 || length(maxd) != 1 || !is.numeric(maxd))
+    if(length(maxd) != 1 || !is.numeric(maxd) || maxd <= 0)
       stop("maxd should be a single integer >= 1")
   }
   if(length(angle) != 1 || !is.numeric(angle) || angle < 0)
     stop("angle should be an single value >= 0")
-  if(ndir < 1 || length(ndir) != 1 || !is.numeric(ndir))
+  if(length(ndir) != 1 || !is.numeric(ndir) || ndir < 1)
     stop("ndir should be a single integer >= 1")
   if(length(type) != 1) stop("type should be a single name")
   if(!is.element(type, c("standard", "cressie", "cloud")))
     stop(paste(type, "is not a valid type"))
-  if(npmin < 1 || length(npmin) != 1 || !is.numeric(npmin))
+  if(length(npmin) != 1 || !is.numeric(npmin) || npmin < 1)
     stop("npmin should be a single integer >= 1")
 }
     
-# determine omnidireciton semivariogram based on 
-# based on distances, kernel (the numerator of the estimator),
-# the cuts (tolerance regions), and minimum numer of pairs allowed
+#' determine omnidireciton semivariogram based on 
+#' based on distances, kernel (the numerator of the estimator),
+#' the cuts (tolerance regions), and minimum numer of pairs allowed
+#' @return NULL
+#' @export
+#' @keywords internal
 omni_semivariogram = function(d, diff, cuts, npmin, type)
 {
   np = unlist(lapply(split(d, cuts), length), use.names = FALSE)

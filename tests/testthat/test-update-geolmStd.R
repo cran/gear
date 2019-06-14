@@ -30,6 +30,7 @@ gear2 = geolm(y ~ x1 + x2, data = data,
               cmod = cmod_std2)
 gear2b = update(gear1, cmod_std2)
 
+context("check update uk std")
 test_that("update.geolmStd uk calculations are correct", {
   expect_true(identical(gear2, gear2b))
 })
@@ -43,6 +44,7 @@ gear2 = geolm(y ~ x1 + x2, data = data,
               cmod = cmod_std2, mu = 2)
 gear2b = update(gear1, cmod_std2)
 
+context("check update sk std")
 test_that("update.geolmStd sk calculations are correct", {
   expect_true(identical(gear2, gear2b))
 })

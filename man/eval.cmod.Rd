@@ -35,4 +35,3 @@ eval.cmod(cmod, d)
 \author{
 Joshua French
 }
-

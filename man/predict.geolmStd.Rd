@@ -70,4 +70,3 @@ pred_sk = predict(gearmod_ok, newdata)
 \author{
 Joshua French
 }
-

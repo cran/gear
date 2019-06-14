@@ -31,4 +31,3 @@ angle2d(coords1, coords2, radians = TRUE)
 \author{
 Joshua French
 }
-

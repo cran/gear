@@ -28,4 +28,3 @@ cmod.man(v = exp(-d), evar = 1)
 \author{
 Joshua French
 }
-

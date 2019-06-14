@@ -8,7 +8,8 @@
 mle(object, reml = FALSE, est = "e", ...)
 
 \method{mle}{geolmStd}(object, reml = FALSE, est = "e", lower = NULL,
-  upper = NULL, method = "nlminb", itnmax = NULL, control = list(), ...)
+  upper = NULL, method = "nlminb", itnmax = NULL, control = list(),
+  ...)
 }
 \arguments{
 \item{object}{A geostatistical linear model object producted by the \code{geolm} function.}
@@ -46,4 +47,3 @@ n = 100
 \author{
 Joshua French
 }
-

@@ -51,13 +51,12 @@ For the \code{wu3} model, \eqn{\rho}(\code{d}; \code{r}) is \code{(1 - sd)^6 * (
 \examples{
 cmod.std(model = "exponential", psill = 1, r = 1) 
 }
-\author{
-Joshua French
-}
 \references{
 Waller, L. A., & Gotway, C. A. (2004). Applied Spatial Statistics for Public Health Data. John Wiley & Sons.
 }
 \seealso{
 \code{\link[spam]{covmat}}
 }
-
+\author{
+Joshua French
+}

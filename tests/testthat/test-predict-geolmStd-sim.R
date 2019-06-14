@@ -78,6 +78,7 @@ for(i in 1:8)
 	uk.results[i, 3] = max(abs(range(georout$beta.est - gearmod$coeff)))
 }
 
+context("compare universal kriging for gear and geoR sim")
 test_that("all predict.geolmStd uk calculations are correct", {
   expect_true(max(uk.results) < 1e-10)
 })
@@ -137,6 +138,7 @@ for(i in 1:8)
 	ok.results[i, 3] = max(abs(range(georout$beta.est - gearmod$coeff)))
 }
 
+context("compare universal kriging for gear and geoR sim")
 test_that("all predict.geolmStd ok calculations are correct", {
   expect_true(max(ok.results) < 1e-10)
 })
@@ -191,6 +193,7 @@ for(i in 1:8)
 	sk.results[i, 2] = max(abs(range(georout$krige.var - gearout$mspe)))
 }
 
+context("compare simple kriging for gear and geoR sim")
 test_that("all fit.std sk calculations are correct", {
   expect_true(max(sk.results) < 1e-10)
 })

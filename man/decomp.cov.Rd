@@ -41,4 +41,3 @@ range(v - tcrossprod(d3))
 \author{
 Joshua French
 }
-

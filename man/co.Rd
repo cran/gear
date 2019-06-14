@@ -56,4 +56,3 @@ xy <- spTransform(lonlat, CRS("+proj=utm +zone=13 ellps=WGS84"))
 \references{
 Smith, D.B., Ellefsen, K.J., and Kilburn, J.E., 2010, Geochemical data for Colorado soils -- Results from the 2006 state-scale geochemical survey: U.S. Geological Survey, Data Series 520, 9p.
 }
-

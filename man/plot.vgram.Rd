@@ -33,10 +33,9 @@ plot(v2, col = 2:5, pch = 1:4, lty = 2:5, type = "b",
  lines=list(col=2:5, lty = 2:5)))
 plot(v2, split = TRUE)
 }
-\author{
-Joshua French
-}
 \seealso{
 \code{\link[lattice]{xyplot}}, \code{\link{vgram}}
 }
-
+\author{
+Joshua French
+}

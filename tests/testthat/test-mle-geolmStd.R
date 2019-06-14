@@ -12,6 +12,7 @@ object = geolm(y ~ x1 + x2, data = data, coordnames = c("x1", "x2"),
 gear_fit = mle(object, reml = FALSE)
 
 # make sure the results are similar
+context("compare mles for gear and geoR")
 test_that("mle.geolmStd calculations are correct", {
   expect_true(abs(gear_fit$cmod_evar0$psill - geoR_fit$cov.pars[1]) < 1e-3)
   expect_true(abs(gear_fit$cmod_evar0$r - geoR_fit$cov.pars[2]) < 1e-3)
@@ -23,6 +24,7 @@ geoR_fit_reml = likfit(fields, trend = "1st", ini.cov.pars = c(1.6, 3.7),
                   nugget = 0.1, lik.method = "REML")
 gear_fit_reml = mle(object, reml = TRUE)
 
+context("compare rmles for gear and geoR")
 test_that("mle.geolmStd calculations are correct", {
    expect_true(abs(gear_fit_reml$cmod_evar0$psill - geoR_fit_reml$cov.pars[1]) < 2e-2)
    expect_true(abs(gear_fit_reml$cmod_evar0$r - geoR_fit_reml$cov.pars[2]) < 4e-2)
@@ -45,6 +47,7 @@ minus2_reml_ll = (n * log(2 * pi) +
           crossprod(resid, solve(v, resid))[1, 1])
 
 # make sure the results are similar
+context("compare rmles manual")
 test_that("mle.geolmStd reml objective function correct", {
   expect_true(abs(gear_fit_reml$optimx$value - minus2_reml_ll) < 1e-3)
 })

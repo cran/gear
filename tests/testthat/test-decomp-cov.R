@@ -14,6 +14,7 @@ range(V - tcrossprod(d1))
 range(V - tcrossprod(d2))
 range(V - tcrossprod(d3))
 
+context("check arguments of decomp.cov")
 test_that("decomp.cov takes valid arguments",{
   # "V should be a matrix or Matrix"
   expect_that(decomp.cov(as.data.frame(V), "blah"), throws_error())
@@ -23,17 +24,19 @@ test_that("decomp.cov takes valid arguments",{
   expect_that(decomp.cov(V, "blah"), throws_error())
 })
 
-test_that("decomp.cov is accurate for Matrix class matrices",{
+context("check accuracy of decomp.cov for matrix objects")
+test_that("decomp.cov is accurate for matrix class matrices",{
   expect_true(max(abs(range(V - tcrossprod(d1)))) < 1e-10)
   expect_true(max(abs(range(V - tcrossprod(d2)))) < 1e-10)
   expect_true(max(abs(range(V - tcrossprod(d3)))) < 1e-10)
 })
 
-V = Matrix(V)
+V = Matrix::Matrix(V)
 d1 = decomp.cov(V, "chol")
 d2 = decomp.cov(V, "eigen")
 d3 = decomp.cov(V, "svd")
 
+context("check accuracy of decomp.cov for Matrix objects")
 test_that("decomp.cov is accurate for Matrix matrices",{
   expect_true(max(abs(range(V - tcrossprod(d1)))) < 1e-10)
   expect_true(max(abs(range(V - tcrossprod(d2)))) < 1e-10)
