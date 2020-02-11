@@ -1,7 +1,6 @@
 library(testthat)
 library(sp)
 library(gstat)
-library(geoR)
 library(spam)
 library(Matrix)
 library(gear)

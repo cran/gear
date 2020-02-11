@@ -4,9 +4,18 @@
 \alias{vgram}
 \title{Sample semivariogram}
 \usage{
-vgram(formula, data, coords = NULL, nbins = 10, maxd = NULL,
-  angle = 0, ndir = 1, type = "standard", npmin = 2,
-  longlat = FALSE)
+vgram(
+  formula,
+  data,
+  coords = NULL,
+  nbins = 10,
+  maxd = NULL,
+  angle = 0,
+  ndir = 1,
+  type = "standard",
+  npmin = 2,
+  longlat = FALSE
+)
 }
 \arguments{
 \item{formula}{A formula describing the relationship between the response and any covariates of interest, e.g., response ~ 1.  The variogram is computed for the residuals of the linear model \code{lm(formula, data)}.}

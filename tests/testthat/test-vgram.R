@@ -2,7 +2,6 @@ data(meuse, package = "sp")
 sp::coordinates(meuse) = ~ x + y
 maxd = max(dist(sp::coordinates(meuse)))/2
 gmeuse = gstat::gstat(id = "cadmium", formula = cadmium ~ 1, data = meuse)
-geomeuse = geoR::as.geodata(data.frame(meuse$x, meuse$y, meuse$cadmium))
 context("test args of vgram function")
 test_that("check args of vgram function", {
   expect_error(vgram(1:10)) # not formula
@@ -79,13 +78,7 @@ test_that("check accuracy of vgram function", {
   # gstat_v5 = variogram(gmeuse, cutoff = maxd, width = maxd/10, alpha = c(0 + 0:3*45))
   # plot(gear_v5, split = TRUE)
   # plot(gstat_v5)
-  
-  # test cloud
-  gear_v6 = vgram(cadmium ~ 1, meuse, nbins = 10, type = "cloud")
-  geo_v6 = geoR::variog(geomeuse, option = "cloud")
-  expect_equal(geo_v6$u, gear_v6$semi$distance)
-  expect_equal(geo_v6$v, gear_v6$semi$semivariance)
-  
+
   # test with trend
   gear_v7 = vgram(cadmium ~ x + y, meuse, nbins = 10)
   gmeuse2 = gstat::gstat(id = "cadmium", formula = cadmium ~ x + y, data = meuse)
@@ -94,3 +87,18 @@ test_that("check accuracy of vgram function", {
   expect_equal(gear_v7$semi$dist, gstat_v7$dist)
   expect_true(max(abs(gear_v7$semi$semivariance - gstat_v7$gamma)) < 1e-10)
 })
+
+if (requireNamespace("geoR", quietly = TRUE)) {
+geomeuse = geoR::as.geodata(data.frame(meuse$x, meuse$y, meuse$cadmium))
+context("compare vgram to geoR")
+test_that("check accuracy of vgram function w/ geoR", {
+  # test cloud
+  gear_v6 = vgram(cadmium ~ 1, meuse, nbins = 10, type = "cloud")
+  geo_v6 = geoR::variog(geomeuse, option = "cloud")
+  expect_equal(geo_v6$u, gear_v6$semi$distance)
+  expect_equal(geo_v6$v, gear_v6$semi$semivariance)
+})
+} else {
+  message("Some tests of vgram couldn't be performed without the geoR package")
+}
+

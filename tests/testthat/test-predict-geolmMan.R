@@ -47,7 +47,7 @@ gearmod_uk2 = geolm(y ~ x1 + x2, data = data,
                   cmod = cmod_std)
 pred_uk_std = predict(gearmod_uk2, newdata, nsim = 2, dmethod = "svd")
 
-context("compare universal kriging for gear and geoR")
+context("compare universal kriging for gear man vs std")
 test_that("predict.geolmMan uk calculations are correct", {
   expect_true(max(abs(range(pred_uk_man$pred - pred_uk_std$pred))) < 1e-10)
   expect_true(max(abs(range(pred_uk_man$mspe - pred_uk_std$mspe))) < 1e-10)
@@ -68,7 +68,7 @@ gearmod_sk2 = geolm(y ~ x1 + x2, data = data,
                     cmod = cmod_std, mu = 2)
 pred_sk_std = predict(gearmod_uk2, newdata, nsim = 2, dmethod = "svd")
 
-context("compare simple kriging for gear and geoR")
+context("compare simple kriging for gear man vs std")
 test_that("predict.geolmMan sk calculations are correct", {
   expect_true(max(abs(range(pred_sk_man$pred - pred_sk_std$pred))) < 1e-10)
   expect_true(max(abs(range(pred_sk_man$mspe - pred_sk_std$mspe))) < 1e-10)

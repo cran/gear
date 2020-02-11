@@ -2,6 +2,7 @@ n = 10
 coords = matrix(runif(n * 2), nrow = n)
 d = as.matrix(dist(coords))
 
+if (requireNamespace("geoR", quietly = TRUE)) {
 # check geoR
 mod = c("exponential", "matern", "spherical", "gaussian")
 evar = c(0, .5, 0, .5)
@@ -15,14 +16,14 @@ count = 0
 for (i in 1:length(mod)) {
   for (j in 1:length(evar)) {
     count = count + 1
-    A = geoR::varcov.spatial(coords, cov.model = mod[i], 
+    A = geoR::varcov.spatial(coords, cov.model = mod[i],
                        kappa = par3[j],
-                       nugget = (evar[j] + fvar[j]), 
+                       nugget = (evar[j] + fvar[j]),
                        cov.pars = c(psill[j], r[j]))
-    cmod = cmod.std(model = mod[i], 
+    cmod = cmod.std(model = mod[i],
                    par3 = par3[j],
-                   psill = psill[j], 
-                   r = r[j], 
+                   psill = psill[j],
+                   r = r[j],
                    evar = evar[j],
                    fvar = fvar[j])
     B = eval.cmod(cmod, d)
@@ -34,6 +35,9 @@ context("check accuracy of eval.cmod with geoR")
 test_that("eval.cmod.cmodStd is accurate (geoR)", {
   expect_true(max(compare) < 1e-10)
 })
+} else {
+  message("test of eval.cmod couldn't be compared to geoR")
+}
 
 # comparison with spam
 
@@ -51,10 +55,10 @@ for (i in 1:length(mod)) {
     count = count + 1
     A = spam::covmat(d, theta = c(r[j], psill[j], (evar[j] + fvar[j])),
                type = mod[i])
-    cmod = cmod.std(model = mod[i], 
+    cmod = cmod.std(model = mod[i],
                    par3 = par3[j],
-                   psill = psill[j], 
-                   r = r[j], 
+                   psill = psill[j],
+                   r = r[j],
                    evar = evar[j],
                    fvar = fvar[j])
     B = eval.cmod(cmod, d)
@@ -80,13 +84,13 @@ count = 0
 for (i in 1:length(mod)) {
   for (j in 1:length(evar)) {
     count = count + 1
-    A = spam::covmat(d, theta = c(r[j], psill[j], par3[j], 
-                                  (evar[j] + fvar[j])), 
+    A = spam::covmat(d, theta = c(r[j], psill[j], par3[j],
+                                  (evar[j] + fvar[j])),
                      type = mod[i])
-    cmod = cmod.std(model = mod[i], 
+    cmod = cmod.std(model = mod[i],
                    par3 = par3[j],
-                   psill = psill[j], 
-                   r = r[j], 
+                   psill = psill[j],
+                   r = r[j],
                    evar = evar[j],
                    fvar = fvar[j])
     B = eval.cmod(cmod, d)

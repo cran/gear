@@ -4,8 +4,7 @@
 \alias{predict.geolmStd}
 \title{Predict method for geostatistical models}
 \usage{
-\method{predict}{geolmStd}(object, newdata, nsim = 0, sp = TRUE,
-  dmethod = "chol", ...)
+\method{predict}{geolmStd}(object, newdata, nsim = 0, sp = TRUE, dmethod = "chol", ...)
 }
 \arguments{
 \item{object}{An object produced by the \code{geolm} function.}

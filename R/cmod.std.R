@@ -39,10 +39,8 @@
 #' @seealso \code{\link[spam]{covmat}}
 #' @examples 
 #' cmod.std(model = "exponential", psill = 1, r = 1) 
-
 cmod.std = function(model, psill, r, evar = 0, 
-                    fvar = 0, par3 = 0.5)
-{
+                    fvar = 0, par3 = 0.5) {
   check.args.cmod.std(model, psill, r, evar, fvar, par3)
   out = list(model = model, psill = psill, r = r, 
              evar = evar, fvar = fvar, par3 = par3)

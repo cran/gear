@@ -23,7 +23,7 @@ plot(v)
 v2 = vgram(Al ~ 1, co, ~ easting + northing, angle = 22.5, ndir = 4)
 plot(v2)
 # show how attributes can be changed using different arguments
-# available in \\code{lattice::xyplot}.
+# available in \code{lattice::xyplot}.
 plot(v2, col = 2:5)
 plot(v2, col = 2:5, pch = 1:4)
 plot(v2, col = 2:5, pch = 1:4, lty = 2:5, type = "b")

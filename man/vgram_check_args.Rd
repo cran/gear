@@ -4,8 +4,7 @@
 \alias{vgram_check_args}
 \title{Check arguments of vgram}
 \usage{
-vgram_check_args(formula, data, coords, nbins, maxd, angle, ndir, type,
-  npmin)
+vgram_check_args(formula, data, coords, nbins, maxd, angle, ndir, type, npmin)
 }
 \description{
 Check arguments of vgram

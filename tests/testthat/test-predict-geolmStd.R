@@ -2,6 +2,7 @@ set.seed(10)
 
 ############ test whether predict.geolmStd results are correct
 
+if (requireNamespace("geoR", quietly = TRUE)) {
 # check accuracy of method (compare to geoR results)
 results.diff.uk <- matrix(99, ncol = 2, nrow = 16)
 
@@ -19,10 +20,9 @@ ntimes = 1
 # store universal kriging results
 uk.results = matrix(99, nrow = 8, ncol = 3)
 
-for(i in 1:8)
-{
+for (i in 1:8) {
   # generate data
-	fields <- grf(100, cov.pars = c(sigmasq[i], phi[i]), cov.model = cm[[i]], 
+	fields <- geoR::grf(100, cov.pars = c(sigmasq[i], phi[i]), cov.model = cm[[i]], 
 		kappa = kappa[i], messages = FALSE)
 	# extract response
 	y <- fields$data
@@ -34,7 +34,7 @@ for(i in 1:8)
 	acoords = rbind(coords, pcoords)
 
 	# create geoR kriging model
-	modeli <- krige.control(type = "ok", trend.d = "1st", trend.l = "1st",
+	modeli <- geoR::krige.control(type = "ok", trend.d = "1st", trend.l = "1st",
 	cov.model = cm[i], cov.pars = c(sigmasq[i], phi[i]), kappa = kappa[i], 
 	nugget = (error.var[i] + micro[i]), micro.scale = micro[i])
 
@@ -43,15 +43,13 @@ for(i in 1:8)
 	newdata = data.frame(x1 = acoords[,1], x2 = acoords[,2])
 	
 	# decide whether signal/filtered or unfiltered model
-	if((i%%2) == 0) # unfiltered
-	{
-		output = output.control(signal = FALSE, messages = FALSE)
+	if ((i %% 2) == 0) {# unfiltered
+		output = geoR::output.control(signal = FALSE, messages = FALSE)
 		# create appropriate covariance model for gear
 		cmod = cmod.std(model = cm[i], psill = sigmasq[i], r = phi[i], 
 		par3 = kappa[i], evar = 0, fvar = (micro[i] + error.var[i]))
-	}else #filtered
-	{
-		output = output.control(signal = TRUE, messages = FALSE)
+	} else {#filtered
+		output = geoR::output.control(signal = TRUE, messages = FALSE)
 		# create appropriate covariance model for gear
 		cmod = cmod.std(model = cm[i], psill = sigmasq[i], 
 		                r = phi[i], 
@@ -62,7 +60,7 @@ for(i in 1:8)
 	gearmod = geolm(y ~ x1 + x2, data = data,
 	              coordnames = c("x1", "x2"),
 	              cmod = cmod)
-	georout = krige.conv(fields, loc = acoords, krige = modeli, output = output)
+	georout = geoR::krige.conv(fields, loc = acoords, krige = modeli, output = output)
 
 	gearout = predict.geolmStd(gearmod,  newdata = newdata, sp = FALSE)
 	
@@ -78,9 +76,8 @@ test_that("all predict.geolmStd uk calculations are correct", {
 
 ok.results = matrix(99, nrow = 8, ncol = 3)
 
-for(i in 1:8)
-{
-	fields <- grf(100, cov.pars = c(sigmasq[i], phi[i]), cov.model = cm[[i]], 
+for (i in 1:8) {
+	fields <- geoR::grf(100, cov.pars = c(sigmasq[i], phi[i]), cov.model = cm[[i]], 
 		kappa = kappa[i], messages = FALSE)
 	y <- fields$data
 	coords = fields$coords
@@ -90,7 +87,7 @@ for(i in 1:8)
 	x = matrix(1, nrow(coords))
 	newx = matrix(1, nrow(acoords))	
 
-	modeli <- krige.control(type = "ok", trend.d = "cte", trend.l = "cte",
+	modeli <- geoR::krige.control(type = "ok", trend.d = "cte", trend.l = "cte",
 	cov.model = cm[i], cov.pars = c(sigmasq[i], phi[i]), kappa = kappa[i], 
 	nugget = (error.var[i] + micro[i]), micro.scale = micro[i])
 
@@ -99,22 +96,20 @@ for(i in 1:8)
 	newdata = data.frame(x1 = acoords[,1], x2 = acoords[,2])
 	
 	# decide whether signal model
-	if((i%%2) == 0)
-	{
-	  output = output.control(signal = FALSE, messages = FALSE)
+	if ((i %% 2) == 0) {
+	  output = geoR::output.control(signal = FALSE, messages = FALSE)
 	  cmod = cmod.std(model = cm[i], psill = sigmasq[i], r = phi[i], 
 	                  par3 = kappa[i], evar = 0, 
 	                  fvar = (micro[i] + error.var[i]))
-	}else
-	{
-	  output = output.control(signal = TRUE, messages = FALSE)
+	} else {
+	  output = geoR::output.control(signal = TRUE, messages = FALSE)
 	  cmod = cmod.std(model = cm[i], psill = sigmasq[i], 
 	                  r = phi[i], 
 	                  par3 = kappa[i], evar = error.var[i], 
 	                  fvar = micro[i])
 	}
 	
-	georout = krige.conv(fields, loc = acoords, krige = modeli, output = output)
+	georout = geoR::krige.conv(fields, loc = acoords, krige = modeli, output = output)
 
 	# create geolm for gear package
 	gearmod = geolm(y ~ 1, data = data,
@@ -135,9 +130,8 @@ test_that("all predict.geolmStd ok calculations are correct", {
 
 sk.results = matrix(99, nrow = 8, ncol = 2)
 
-for(i in 1:8)
-{
-	fields <- grf(100, cov.pars = c(sigmasq[i], phi[i]), cov.model = cm[[i]], 
+for (i in 1:8) {
+	fields <- geoR::grf(100, cov.pars = c(sigmasq[i], phi[i]), cov.model = cm[[i]], 
 		kappa = kappa[i], messages = FALSE)
 	y <- fields$data
 	coords = fields$coords
@@ -145,27 +139,25 @@ for(i in 1:8)
 	acoords = rbind(coords, pcoords)
 	mus = rnorm(8, 0, sd = 25)
 
-	modeli <- krige.control(type = "sk", trend.d = "cte", trend.l = "cte",
+	modeli <- geoR::krige.control(type = "sk", trend.d = "cte", trend.l = "cte",
 	cov.model = cm[i], cov.pars = c(sigmasq[i], phi[i]), kappa = kappa[i], 
 	nugget = (error.var[i] + micro[i]), micro.scale = micro[i], beta = mus[i])
 
 	# decide whether signal model
-	if((i%%2) == 0)
-	{
-	  output = output.control(signal = FALSE, messages = FALSE)
+	if ((i %% 2) == 0) {
+	  output = geoR::output.control(signal = FALSE, messages = FALSE)
 	  cmod = cmod.std(model = cm[i], psill = sigmasq[i], r = phi[i], 
 	                  par3 = kappa[i], evar = 0, 
 	                  fvar = (micro[i] + error.var[i]))
-	}else
-	{
-	  output = output.control(signal = TRUE, messages = FALSE)
+	} else {
+	  output = geoR::output.control(signal = TRUE, messages = FALSE)
 	  cmod = cmod.std(model = cm[i], psill = sigmasq[i], 
 	                  r = phi[i], 
 	                  par3 = kappa[i], evar = error.var[i], 
 	                  fvar = micro[i])
 	}
 	
-	georout = krige.conv(fields, loc = acoords, krige = modeli, output = output)
+	georout = geoR::krige.conv(fields, loc = acoords, krige = modeli, output = output)
 
 	data = data.frame(x1 = coords[,1], x2 = coords[,2], y = y)
 	newdata = data.frame(x1 = acoords[,1], x2 = acoords[,2])
@@ -185,3 +177,6 @@ context("compare simple kriging for gear and geoR")
 test_that("all fit.std sk calculations are correct", {
   expect_true(max(sk.results) < 1e-10)
 })
+} else {
+  message("Could not perform predict-geolmStd test since geoR not present")
+}

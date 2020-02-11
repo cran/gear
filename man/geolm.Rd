@@ -4,8 +4,16 @@
 \alias{geolm}
 \title{Linear model for geostatistical data.}
 \usage{
-geolm(formula, data, coordnames, cmod = NULL, vmod = NULL,
-  weights = NULL, longlat = FALSE, mu = NULL)
+geolm(
+  formula,
+  data,
+  coordnames,
+  cmod = NULL,
+  vmod = NULL,
+  weights = NULL,
+  longlat = FALSE,
+  mu = NULL
+)
 }
 \arguments{
 \item{formula}{An object of class formula.  See Details.}

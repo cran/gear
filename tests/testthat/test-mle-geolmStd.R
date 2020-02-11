@@ -1,9 +1,9 @@
 set.seed(1)
-library(geoR)
-fields <- grf(100, cov.pars = c(1, 1), nugget = 0.1, cov.model = "exponential", 
+if (requireNamespace("geoR", quietly = TRUE)) {
+fields <- geoR::grf(100, cov.pars = c(1, 1), nugget = 0.1, cov.model = "exponential", 
               kappa = 0.5, messages = FALSE)
-geoR_fit = likfit(fields, trend = "1st", ini.cov.pars = c(1, 1), 
-                  nugget = 0.1, lik.method = "ML")
+geoR_fit = geoR::likfit(fields, trend = "1st", ini.cov.pars = c(1, 1), 
+                  nugget = 0.1, lik.method = "ML", messages = FALSE)
 
 cmod1 = cmod.std("exponential", psill = 1, r = 1, evar = 0.1)
 data = data.frame(y = fields$data, x1 = fields$coords[,1], x2 = fields$coords[,2])
@@ -20,8 +20,8 @@ test_that("mle.geolmStd calculations are correct", {
   expect_true(abs(gear_fit$loglik - geoR_fit$loglik) < 1e-3)
 })
 
-geoR_fit_reml = likfit(fields, trend = "1st", ini.cov.pars = c(1.6, 3.7), 
-                  nugget = 0.1, lik.method = "REML")
+geoR_fit_reml = geoR::likfit(fields, trend = "1st", ini.cov.pars = c(1.6, 3.7), 
+                  nugget = 0.1, lik.method = "REML", messages = FALSE)
 gear_fit_reml = mle(object, reml = TRUE)
 
 context("compare rmles for gear and geoR")
@@ -51,19 +51,6 @@ context("compare rmles manual")
 test_that("mle.geolmStd reml objective function correct", {
   expect_true(abs(gear_fit_reml$optimx$value - minus2_reml_ll) < 1e-3)
 })
-
-# par = c(1, .1)
-# weights = rep(1, 100)
-# x = cbind(1, fields$coords)
-# y = fields$data + x %*% c(1, 2, 1)
-# scmod = cmod.std("exponential", psill = 1, r = 1, evar = 0)
-# d = as.matrix(dist(fields$coords))
-# cmod = cmod.std("exponential", psill = 1, r = 1, evar = 0.1)
-# data = data.frame(y = y, x1 = fields$coords[,1], x2 = fields$coords[,2])
-# object = geolm(y ~ x1 + x2, data = data, coordnames = c("x1", "x2"), 
-#                cmod = cmod)
-# 
-# nugget = "e"
-# reml = FALSE
-
-
+} else {
+  message("comparison of geolmStd with geoR not available")
+}
