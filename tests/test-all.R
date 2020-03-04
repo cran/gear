@@ -1,7 +1,7 @@
-library(testthat)
-library(sp)
-library(gstat)
-library(spam)
-library(Matrix)
 library(gear)
-test_check("gear")
+if (requireNamespace("testthat", quietly = TRUE)) {
+  library(testthat)
+  test_check("gear")
+} else {
+  message("tests could not be run because testthat is not installed")
+}

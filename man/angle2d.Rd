@@ -4,14 +4,23 @@
 \alias{angle2d}
 \title{Determine angle}
 \usage{
-angle2d(coords1, coords2, radians = FALSE)
+angle2d(coords1, coords2, radians = FALSE, invert = TRUE)
 }
 \arguments{
 \item{coords1}{An \eqn{N \times 2} matrix of spatial coordinates.}
 
 \item{coords2}{An \eqn{N \times 2} matrix of spatial coordinates.}
 
-\item{radians}{A logical indicating whether degrees or radians should be returned.  Default is FALSE, meaning return angle in degrees.}
+\item{radians}{A logical value indicating whether degrees or radians should be returned.  Default is FALSE, meaning return angle in degrees.}
+
+\item{invert}{A logical value indicating whether the axes
+of the coordinates should be inverted (i.e., the x- and y-axis are
+switched). The default is
+\code{TRUE} to mimic results from
+other geostatistical R packages like \code{gstat},
+\code{geoR} or other software like \code{GSLIB} and
+\code{GeoEAS}. Set to \code{FALSE} to use the typical
+x- and y-axis.}
 }
 \value{
 Returns a vector of angles.

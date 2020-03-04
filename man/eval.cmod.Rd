@@ -2,34 +2,33 @@
 % Please edit documentation in R/eval.cmod.R
 \name{eval.cmod}
 \alias{eval.cmod}
-\alias{eval.cmod.cmodStd}
 \title{Evaluate covariance or semivariance model.}
 \usage{
-eval.cmod(mod, d = NULL, coords = NULL)
-
-\method{eval.cmod}{cmodStd}(mod, d, coords = NULL)
+eval.cmod(mod, d, coords = NULL)
 }
 \arguments{
 \item{mod}{A covariance or semivariance model.}
 
 \item{d}{An \eqn{n \times m} matrix of distances.}
 
-\item{coords}{An numeric object with two columns.}
+\item{coords}{Not used.}
 }
 \value{
-Returns the evaluated model with necessary components needed for \code{mlefit}, \code{predict}, or \code{loglik} functions.
+Returns the evaluated model with necessary
+  components needed for \code{\link[gear]{estimate}} and
+  \code{\link{predict}}.
 }
 \description{
-\code{eval.cmod} evaluates the covariance or semivariance of a model based on the provided arguments.  See Details for what the function returns, as it changes depending on the class of \code{mod}.
-}
-\details{
-If \code{mod} is of class \code{cmodStd} (from the \code{cmod.std} function), then the function returns an \eqn{n \times m} matrix with the evaluated standard covariance function.
+\code{eval.cmod} evaluates the covariance 
+of a model based on the provided arguments.  This
+function will be deprecated in the future. Please use
+the \code{\link[gear]{evaluate}} function.
 }
 \examples{
 n = 10
 coords = matrix(runif(2*n), nrow = n, ncol = 2)
 d = as.matrix(dist(coords))
-cmod = cmod.std(model = "exponential", psill = 1, r = 1)
+cmod = cmod_std(model = "exponential", psill = 1, r = 1)
 eval.cmod(cmod, d)
 }
 \author{

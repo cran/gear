@@ -1,1 +1,10 @@
 # 0.1.5 Change tests to safely handle orphaned package geoR.
+# 0.2.0 Update tests to not require spam, geoR, gstat
+        packages. Replace vgram with evgram to avoid
+        conflict with fields package. Replace mle with
+        estimate to avoid conflicts with spam package. Add
+        ability to model geometric anisotropy with cmod_std.
+        Plan deprecation of vgram, cmod.std, cmod.man,
+        longlat argument in geolm. Fix bug in reml loglik
+        calculations. Add many new tests. Save test results
+        when possible for faster testing.

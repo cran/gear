@@ -8,47 +8,79 @@ geolm(
   formula,
   data,
   coordnames,
-  cmod = NULL,
-  vmod = NULL,
+  mod,
   weights = NULL,
-  longlat = FALSE,
-  mu = NULL
+  mu = NULL,
+  longlat = NULL,
+  cmod = NULL
 )
 }
 \arguments{
-\item{formula}{An object of class formula.  See Details.}
+\item{formula}{An object of class
+\code{\link[stats]{formula}} providing a symbolic
+description of the model to be fitted.  See Details of
+this function and \code{\link[stats]{lm}}.}
 
-\item{data}{A data frame containing the response, covariates, and location coordinates.}
+\item{data}{A data frame containing the response,
+covariates, and location coordinates.}
 
-\item{coordnames}{A vector of length 2 with the names of the columns in \code{data} containing the coordinates, e.g., \code{c("long", "lat")}.}
+\item{coordnames}{A vector of length 2 with the names of
+the columns in \code{data} containing the coordinates,
+e.g., \code{c("long", "lat")}.}
 
-\item{cmod}{A covariance model object obtained from one of the \code{cmod.*} functions, e.g., \code{\link[gear]{cmod.std}}.}
+\item{mod}{A model object produced by one
+of the \code{cmod_*} functions, e.g.,
+\code{\link[gear]{cmod_std}}.}
 
-\item{vmod}{A semivariance model object obtained from one of the \code{vmod.*} functions.  Not currently implemented.}
+\item{weights}{An optional vector of weights for the
+errors to be used in the fitting process.  A vector
+that is proportional to the reciprocal variances of the
+errors, i.e., errors are assumed to be uncorrelated
+with variances \code{evar/weights}.  Default is
+\code{NULL}, meaning that the weights are uniformly 1.}
 
-\item{weights}{An optional vector of weights for the errors to be used in the fitting process.  A vector that is proportional to the reciprocal variances of the errors, i.e., errors are assumed to be uncorrelated with variances \code{evar/weights}.  Default is \code{NULL}, meaning that the weights are uniformly 1.}
+\item{mu}{A single numeric value indicating the consant
+mean of the spatial process if simple kriging is
+desired.  Default is \code{NULL}, meaning that ordinary
+or universal kriging should be used.}
 
-\item{longlat}{A logical value.  Default is \code{FALSE}.  If \code{TRUE}, Great Circle distances (WGS84 ellipsoid) are calcualted between locations.  Otherwise, Euclidean.}
+\item{longlat}{A logical value indicating whether great
+circle distance should be used. The default is
+\code{FALSE}.}
 
-\item{mu}{A single numeric value indicating the consant mean of the spatial process if simple kriging is desired.  Default is \code{NULL}, meaning that ordinary or universal kriging should be used.}
+\item{cmod}{Retained for backwards compatibility. A model object produced by one
+of the \code{cmod_*} functions, e.g.,
+\code{\link[gear]{cmod_std}}.}
 }
 \value{
-Returns a \code{geolm} object.
+Returns a \code{geolm_*} object, where \code{*}
+  depends on \code{mod}.
 }
 \description{
-\code{geolm} creates a geostatistical linear model object of the appropriate class based on the arguments, especially the \code{cmod} arguments.
+\code{geolm} creates a geostatistical linear model object
+of the appropriate class based on the arguments,
+especially the \code{cmod} arguments.
 }
 \details{
-\code{formula} should be specified after the form \code{y ~ x1 + x2}, where \code{y} is the response variable and \code{x1} and \code{x2} are the covariates of interest.  If \code{mu} is provided, the variables to the right of \code{~} are ignored.
+Note: for the multiresolution Gaussian process model, if
+\code{cmod$est == "f"} (i.e., if the nugget is finescale
+instead of measurement error), then the \code{weights}
+argument is internally set to \code{rep(1, n)}, where
+\code{n} is the number of observations.
+
+\code{formula} should be specified after the form \code{y
+~ x1 + x2}, where \code{y} is the response variable and
+\code{x1} and \code{x2} are the covariates of interest.
+If \code{mu} is provided, the variables to the right of
+\code{~} are ignored.
 }
 \examples{
-data = data.frame(y = rnorm(10), x1 = runif(10), 
+data = data.frame(y = rnorm(10), x1 = runif(10),
                  x2 = runif(10))
-cmod = cmod.std(model = "exponential", psill = 1, 
-                 r = 1)
+d = as.matrix(dist(data[,c("x1", "x2")]))
+mod = cmod_man(v = exp(-d), evar = 1)
 gearmod = geolm(y ~ x1, data = data,
-                 coordnames = c("x1", "x2"),
-                 cmod = cmod)
+                coordnames = ~ x1 + x2, mod = mod)
 }
 \author{
 Joshua French

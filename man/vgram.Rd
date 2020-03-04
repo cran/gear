@@ -2,27 +2,32 @@
 % Please edit documentation in R/vgram.R
 \name{vgram}
 \alias{vgram}
-\title{Sample semivariogram}
+\title{Empirical variogram}
 \usage{
 vgram(
   formula,
   data,
-  coords = NULL,
+  coordnames = NULL,
   nbins = 10,
   maxd = NULL,
   angle = 0,
   ndir = 1,
   type = "standard",
   npmin = 2,
-  longlat = FALSE
+  longlat = FALSE,
+  verbose = TRUE,
+  coords = NULL
 )
 }
 \arguments{
 \item{formula}{A formula describing the relationship between the response and any covariates of interest, e.g., response ~ 1.  The variogram is computed for the residuals of the linear model \code{lm(formula, data)}.}
 
-\item{data}{A data.frame, SpatialPointsDataFrame, SpatialPixelsDataFrame, or SpatialGridDataFrame object.}
+\item{data}{A \code{data.frame}, \code{SpatialPointsDataFrame}, \code{SpatialPixelsDataFrame}, or \code{SpatialGridDataFrame} object.}
 
-\item{coords}{A formula specifiying (on the righthand side of ~) the coordinates in \code{data}.  Default is NULL, but this must be specified if \code{data} is of class \code{data.frame}.  This will probably look something like "~ x + y".}
+\item{coordnames}{The columns of \code{data} containing the spatial coordinates, 
+provided as a formula (e.g., ~ x + y), 
+column numbers (e.g., c(1, 2)), or column names (e.g., c("x", "y")).
+The default is NULL, but this must be specified if \code{data} is of class \code{data.frame}.}
 
 \item{nbins}{The number of bins (tolerance regions) to use when estimating the sample semivariogram.}
 
@@ -37,23 +42,39 @@ vgram(
 \item{npmin}{The minimum number of pairs of points to use in the semivariogram estimator.  For any bins with fewer points, the estimate for that bin is dropped.}
 
 \item{longlat}{A logical indicating whether Euclidean (\code{FALSE}) or Great Circle distance (WGS84 ellipsoid) (\code{longlat = TRUE}) should be used.  Default is \code{FALSE}.}
+
+\item{verbose}{Print computation information.  Default is \code{TRUE}.}
+
+\item{coords}{A deprecated argument.}
 }
 \value{
-Returns a vgram object with components:
+Returns an \code{evgram} object with components:
 }
 \description{
-\code{vgram} calculates the sample semivariogram.
+\code{vgram} calculates an empirical variogram.  Note that, by convention,
+the empirical variogram actually estimates the semivariogram, not the 
+theoretical variogram (which is twice the semivariogram).
 }
 \details{
-Note that the directions may be different from other packages (e.g., \code{gstat} or \code{geoR} packages) because those packages calculate angles clockwise from the y-axis, which is a convention frequently seen in geostatistics (e.g., the GSLIB software library).
+Note that the directions may be different from other packages 
+(e.g., \code{gstat} or \code{geoR} packages) because those 
+packages calculate angles clockwise from the y-axis, which is 
+a convention frequently seen in geostatistics 
+(e.g., the GSLIB software library).
 
-Additionally, note that calculating the sample semivariogram for the residuals of lm(response ~ 1) will produce identical results to simply computing the sample semivariogram from the original response.  However, if a trend is specified (the righthand side of ~ has non-trival covariates), then the sample semivariogram of the residuals will differ from that of the original response.  A trend should be specified when the mean is non-stationary over the spatial domain.
+Additionally, note that calculating the empirical variogram for 
+the residuals of lm(response ~ 1) will produce identical results 
+to simply computing the sample semivariogram from the original response.  
+However, if a trend is specified (the righthand side of ~ has non-trival 
+covariates), then the empirical variogram of the residuals will differ 
+from that of the original response.  A trend should be specified when 
+the mean is non-stationary over the spatial domain.
 }
 \examples{
 data(co)
 v = vgram(Al ~ 1, co, ~ easting + northing)
 plot(v)
-v2 = vgram(Al ~ 1, co, ~ easting + northing, angle = 22.5, ndir = 4)
+v2 = vgram(Al ~ 1, co, c("easting", "northing"), angle = 22.5, ndir = 4)
 plot(v2)
 }
 \author{
