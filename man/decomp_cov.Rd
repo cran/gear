@@ -10,14 +10,14 @@ decomp_cov(v, method = "eigen")
 decomp.cov(v, method = "eigen")
 }
 \arguments{
-\item{v}{An \eqn{n \times n} covariance matrix.}
+\item{v}{An \eqn{N \times N} covariance matrix.}
 
 \item{method}{The method used to decompose \code{v}.
-valid options are \code{"chol"}, \code{"eigen"}, or
+Valid options are \code{"chol"}, \code{"eigen"}, or
 \code{"svd"}.}
 }
 \value{
-Returns an \eqn{n \times n} matrix.
+Returns an \eqn{N \times N} matrix.
 }
 \description{
 \code{decomp_cov} decomposes a covariance matrix
@@ -25,8 +25,8 @@ Returns an \eqn{n \times n} matrix.
 \code{tcrossprod(A, A) == v}.
 }
 \details{
-The \code{"chol"} method is the fastest, but must
-unstable.  The \code{"eigen"} method is slower, but more
+The \code{"chol"} method is the fastest but least
+stable method.  The \code{"eigen"} method is slower, but more
 stable.  The \code{"svd"} method is the slowest method,
 but should be the most stable.
 }
@@ -44,9 +44,9 @@ d2 = decomp_cov(v, "eigen")
 d3 = decomp_cov(v, "svd")
 
 # verify accuracy of decompositions
-range(v - tcrossprod(d1))
-range(v - tcrossprod(d2))
-range(v - tcrossprod(d3))
+all.equal(v, tcrossprod(d1))
+all.equal(v, tcrossprod(d2), check.attributes = FALSE)
+all.equal(v, tcrossprod(d3), check.attributes = FALSE)
 }
 \author{
 Joshua French

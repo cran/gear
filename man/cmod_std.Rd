@@ -19,13 +19,15 @@ cmod_std(
 )
 }
 \arguments{
-\item{model}{A standard covariance model type.}
+\item{model}{A covariance model (e.g.,
+\code{"exponential"}). See Details for the complete
+list of choices.}
 
 \item{psill}{The partial sill of the model.  Must be a
 positive number.}
 
-\item{r}{The range parameter r.  Must be a positive
-number.}
+\item{r}{The range parameter \code{r}.  Must be a
+positive number.}
 
 \item{evar}{The variance of the errors.  Must be
 non-negative number.  The default is 0.}
@@ -44,21 +46,23 @@ circle distance should be used. The default is
 \item{angle}{The major axis of geometric anisotropy (the
 direction of strongest spatial dependence). Must be
 between [0, 180) if \code{radians = FALSE}, otherwise
-it must be between [0, pi).}
+it must be between [0, \eqn{\pi}).}
 
 \item{ratio}{The ratio of the minor axis range over the
 major axis range. The value must be between (0, 1].}
 
-\item{radians}{A logical value indicating whether degrees or radians should be returned.  Default is FALSE, meaning return angle in degrees.}
+\item{radians}{A logical value indicating whether the
+angles returned should be in degrees or radians.  The
+default is \code{FALSE}, indicating that the returned
+angles are in degrees.}
 
 \item{invert}{A logical value indicating whether the axes
-of the coordinates should be inverted (i.e., the x- and y-axis are
-switched). The default is
-\code{TRUE} to mimic results from
-other geostatistical R packages like \code{gstat},
-\code{geoR} or other software like \code{GSLIB} and
-\code{GeoEAS}. Set to \code{FALSE} to use the typical
-x- and y-axis.}
+of the coordinates should be inverted (i.e., the x- and
+y-axis are switched). The default is \code{TRUE} to
+mimic results from other geostatistical R packages like
+\code{gstat}, \code{geoR}, and other software like
+\code{GSLIB} and \code{GeoEAS}. Set to \code{FALSE} to
+use the typical x- and y-axes.}
 }
 \value{
 Returns a \code{cmodStd} object.
@@ -68,11 +72,12 @@ Creates a standard covariance model (\code{cmodStd})
 object for geostatistical data.
 }
 \details{
-The general form of the specified covariance function is
+The general, isotropic form of the specified covariance function is
 \code{psill} * \eqn{\rho}(\code{d}; \code{r}) +
-(\code{evar} + \code{fvar})*(\code{d==0}), where
-\eqn{\rho} is the covariance function of the parametric
-models.
+(\code{evar} + \code{fvar}) * (\code{d == 0}), where
+\eqn{\rho} is the correlation function of the parametric
+models and \code{d} is the distance between the
+relevant coordinates.
 
 For the \code{exponential} model, \eqn{\rho}(\code{d};
 \code{r}) is exp(-\code{d}/\code{r}).

@@ -12,8 +12,8 @@ evaluate(mod, d, e = TRUE, f = TRUE)
 \arguments{
 \item{mod}{A covariance or semivariogram model.}
 
-\item{d}{An \eqn{n \times m} matrix of distances. 
-If \code{mod$ratio != !}, i.e., if geometric anisotropy
+\item{d}{An \eqn{n \times m} matrix of distances.
+If \code{mod$ratio != 1}, i.e., if geometric anisotropy
 has been specified, then \code{d} must be produced by the
 \code{\link[gear]{ganiso_d}} function.}
 

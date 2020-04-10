@@ -40,7 +40,7 @@ of object that should be returned. The default is
 \code{"\link[sp]{SpatialPointsDataFrame}"} for easy
 plotting of results (see Examples). Other options
 include \code{"\link[base]{data.frame}"},
-\code{"gearPredict"}, and \code{"\link[sf]{sf}"}.}
+\code{"\link[gear]{geardf}"}, and \code{"\link[sf]{sf}"}.}
 
 \item{dmethod}{The method used to decompose the
 covariance matrix for conditional simulation.  Valid
@@ -56,18 +56,19 @@ Please use the \code{return_type} argument. A logical
 value indicating whether to object returned should be
 of class \code{\link[sp]{SpatialPointsDataFrame}} for
 easier plotting with the \code{sp} package.  Default is
-\code{TRUE}.}
+\code{NULL}.}
 
 \item{...}{Currently unimplemented.}
 }
 \value{
-A \code{data.frame},
-  \code{SpatialPointsDataFrame}, \code{"gearPredict"}, or
-  \code{sf} object with the kriging predictions
+A \code{\link[base]{data.frame}},
+  \code{\link[sp]{SpatialPointsDataFrame}},
+  \code{\link[gear]{geardf}}, or \code{\link[sf]{sf}}
+  object with the kriging predictions
   \code{pred}, kriging variance/mean-square prediction
   error (\code{mspe}), the root mean-square prediction
   error \code{mspe} (\code{rmspe}), and the conditional
-  simulation \code{sim.1}, \code{sim.2}, etc.
+  simulations \code{sim.1}, \code{sim.2}, etc.
   \code{sim.1}, \code{sim.2}, etc.
 }
 \description{
@@ -118,8 +119,8 @@ gearmod_uk = geolm(y ~ x1 + x2, data = data, mod = mod_man,
 newdata = data.frame(x1 = c(x1, runif(5)), x2 = c(x2, runif(5)))
 newcoords = newdata[, cnames]
 # create vop and vp using distances
-dop = sp::spDists(as.matrix(coords), as.matrix(newcoords))
-dp = as.matrix(dist(newcoords))
+dop = geodist(as.matrix(coords), as.matrix(newcoords))
+dp = geodist(newcoords)
 
 # manually create cross-covariance and covariance for
 # prediction locations
@@ -130,8 +131,6 @@ vp = psill * exp(-dp/r) + fvar * diag(nrow(newcoords))
 # using manual covariance matrices
 pred_uk_man = predict(gearmod_uk, newdata, nsim = 2,
                       vop = vop, vp = vp, dmethod = "svd")
-# plot prediction values using sp package
-sp::spplot(pred_uk_man, "pred")
 
 # do the same thing, but using cmod_std
 

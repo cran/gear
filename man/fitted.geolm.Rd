@@ -11,7 +11,7 @@
 \code{\link[gear]{geolm}} function.}
 
 \item{x}{A \eqn{m \times p} matrix of covariates for the
-locations where fitted values are desired. If 
+locations where fitted values are desired. If
 \code{NULL}, \code{object$x} is used.}
 
 \item{...}{Not currently implemented.}
@@ -31,7 +31,7 @@ If the \code{object} has a known mean, i.e.,
 \code{object$mu} is not \code{NULL}, then the function
 returns the vector \code{rep(object$mu, m)}. If
 \code{object} has estimated coefficients, then \code{x
-\%*\% object$coeff)} is returned.
+\%*\% object$coeff} is returned.
 
 If \code{x} is missing, then \code{object$x} is used for
 \code{x}. Naturally, \code{ncol(x)} must equal

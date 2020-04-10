@@ -4,7 +4,7 @@
 \alias{xyplot.evgram}
 \title{Plot \code{evgram} object}
 \usage{
-\method{xyplot}{evgram}(x, ..., split = FALSE)
+xyplot.evgram(x, ..., split = FALSE)
 }
 \arguments{
 \item{x}{An \code{evgram} object produced by the \code{\link[gear]{evgram}} function.}
@@ -18,24 +18,32 @@ in a single or split panels.  Default is FALSE, for a single panel.}
 \description{
 Plots \code{evgram} object produced by the
 \code{\link[gear]{evgram}} function using the
-\code{\link[lattice]{xyplot}} function.
+\code{\link[lattice]{xyplot}} function. Note: the
+\code{lattice} package must be loaded (i.e.,
+\code{library(lattice)} or \code{lattice::xyplot}
+must be specifically called for this function to work.
+See Examples.
 }
 \examples{
 data(co)
 v = evgram(Al ~ 1, co, ~ easting + northing)
-xyplot(v)
+if (requireNamespace("lattice")) {
+   lattice::xyplot(v)
+}
 v2 = evgram(Al ~ 1, co, ~ easting + northing, angle = 22.5, ndir = 4)
-xyplot(v2)
-# show how attributes can be changed using different arguments
-# available in lattice::xyplot.
-xyplot(v2, col = 2:5)
-xyplot(v2, col = 2:5, pch = 1:4)
-xyplot(v2, col = 2:5, pch = 1:4, lty = 2:5, type = "b")
-xyplot(v2, col = 2:5, pch = 1:4, lty = 2:5, type = "b",
- key=list(text=list(levels(as.factor(v2$semi$angle))),
- space='right', points=list(pch=1:4, col=2:5),
- lines=list(col=2:5, lty = 2:5)))
-xyplot(v2, split = TRUE)
+if (requireNamespace("lattice")) {
+   lattice::xyplot(v2)
+   # show how attributes can be changed using different
+   # arguments available in lattice::xyplot.
+   lattice::xyplot(v2, col = 2:5)
+   lattice::xyplot(v2, col = 2:5, pch = 1:4)
+   lattice::xyplot(v2, col = 2:5, pch = 1:4, lty = 2:5, type = "b")
+   lattice::xyplot(v2, col = 2:5, pch = 1:4, lty = 2:5, type = "b",
+    key=list(text=list(levels(as.factor(v2$semi$angle))),
+    space='right', points=list(pch=1:4, col=2:5),
+    lines=list(col=2:5, lty = 2:5)))
+   lattice::xyplot(v2, split = TRUE)
+}
 }
 \seealso{
 \code{\link[lattice]{xyplot}}, \code{\link[gear]{evgram}}

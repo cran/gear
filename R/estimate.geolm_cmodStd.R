@@ -49,14 +49,14 @@
 #'   produced by the \code{geolm} function.
 #' @param reml  A logical value indicating whether standard
 #'   maximum likelihood estimation should be performed
-#'   (\code{reml = FALSE}).  If \code{reml = TRUE}, then the
-#'   restricted maximum likelihood is performed.  The
+#'   (\code{reml = FALSE}).  If \code{reml = TRUE}, then
+#'   restricted maximum likelihood estimation is performed.  The
 #'   default is \code{FALSE}.
 #' @param noise_type A character vector indicating the type
 #'   of noise (nugget) variance to estimate. The default is
 #'   \code{est = "e"}, indicating the error variance should
 #'   be estimated. Alternatively, the user can specify
-#'   \code{est = "f"}, indicating that the finescale
+#'   \code{est = "f"}, indicating that the finescale (microscale)
 #'   variance should be estimated. The other type of noise
 #'   variance is set to 0, otherwise the model is not
 #'   identifiable. See Details.
@@ -67,9 +67,9 @@
 #' parameters you wish to set upper bounds for and the
 #' associated value.
 #' @param method The optimization method.  The default is
-#'   \code{"nlminb"}, with \code{"L-BFGS-B"} being another
+#'   \code{"nlminb"}. \code{"L-BFGS-B"} is another
 #'   acceptable choice.  See \code{\link[optimx]{optimx}}
-#'   for details.
+#'   for further choices.
 #' @param itnmax An integer indicating the maximum number of
 #'   iterations to allow for the optimization procedure.
 #' @param control A list of control parameters passed
@@ -81,7 +81,7 @@
 #' @param est_par3 A logical value indicating whether
 #'   \code{par3} should be estimated (for an appropriate
 #'   covariance model such as \code{"matern"} or
-#'   \code{"amatern"}. The default is \code{TRUE},
+#'   \code{"amatern"}). The default is \code{TRUE},
 #'   indicating that this parameter should be estimated.
 #' @param est_angle A logical value indicating whether the
 #'   geometric anisotropy angle should be estimated. The
@@ -111,7 +111,8 @@
 #' object = geolm(y ~ x1 + x2, data = toydata, mod = mod_std,
 #'                   coordnames = c("x1", "x2"))
 #' est_object = estimate(object, control = list(trace = 1),
-#'                       verbose = TRUE)
+#'                       verbose = TRUE,
+#'                       lower = list(r = 0.05, lambda = 0.05))
 estimate.geolm_cmodStd = function(object, reml = FALSE, noise_type = "e",
                         lower = NULL, upper = NULL,
                         method = "nlminb", itnmax = NULL,
@@ -141,7 +142,7 @@ estimate.geolm_cmodStd = function(object, reml = FALSE, noise_type = "e",
                  object$mod$invert)
     maxd = max(d$d)
   } else {
-    d = sp::spDists(as.matrix(object$coords), longlat = object$mod$longlat)
+    d = geodist(as.matrix(object$coords), longlat = object$mod$longlat)
     maxd = max(d)
   }
   vary = stats::var(object$y)
@@ -227,3 +228,89 @@ estimate.geolm_cmodStd = function(object, reml = FALSE, noise_type = "e",
   # object$new_mod = new_mod
   return(object)
 }
+
+#' Argument check estimate.geolm_cmodStd
+#' @param reml  A logical value indicating whether standard
+#'   maximum likelihood estimation should be performed
+#'   (\code{reml = FALSE}).  If \code{reml = TRUE}, then
+#'   restricted maximum likelihood is performed.  Default is
+#'   \code{FALSE}.
+#' @param noise_type A character vector indicating the type
+#'   of noise (nugget) variance to estimate. The default is
+#'   (\code{est = "e"}), indicating the error variance
+#'   should be estimated. Alternatively, the user can
+#'   specify (\code{est = "f"}), indicating the finescale
+#'   variance should be estimated. The other type of noise
+#'   variance is set to 0, otherwise the model is not
+#'   identifiable.
+#' @param est_nugget A logical value indicating whether the
+#'   nugget variance (\code{evar} or \code{fvar}) should be
+#'   estimated. The default is \code{TRUE}.
+#' @param est_par3 A logical value indicating whether
+#'   \code{par3} should be estimated (for an appropriate
+#'   covariance model such ash \code{"matern"} or
+#'   \code{"amatern"}. The default is \code{TRUE}.
+#' @param est_angle A logical value indicating whether the
+#'   geometric anisotropy angle should be estimated. The
+#'   default is \code{FALSE}. This argument is ignored of
+#'   \code{mod$ganiso} is \code{NULL}.
+#' @param est_ratio A logical value indicating whether the
+#'   geometric anisotropy ratio of minor axis length to
+#'   major axis length should be estimated. The default is
+#'   \code{FALSE}. This argument is ignored of
+#'   \code{mod$ganiso} is \code{NULL}.
+#' @noRd
+arg_check_estimate_geolm_cmodStd = function(reml, noise_type,
+                                            est_nugget,
+                                            est_par3,
+                                            est_angle,
+                                            est_ratio,
+                                            control,
+                                            verbose) {
+  arg_check_reml(reml)
+  arg_check_noise_type(noise_type)
+  arg_check_est_nugget(est_nugget)
+  arg_check_est_par3(est_par3)
+  arg_check_est_angle(est_angle)
+  arg_check_est_ratio(est_ratio)
+  if (!is.list(control)) stop("control must be a list")
+  arg_check_verbose(verbose)
+}
+
+#' Check lower, upper bounds for parm for estimate.geolm_cmodStd
+#'
+#' @param lower A vector of lower bounds for relevant parameters
+#' @param parm A vector of initial starting values for relevant parameters
+#' @param upper A vector of upper bounds for relevant parameters
+#' @noRd
+arg_check_lower_parm_upper = function(lower, parm, upper, mod) {
+  if (length(lower) != length(parm)) {
+    message("The length of lower must must match the number of parameters to be estimated.")
+    message("lower:")
+    print(lower)
+    message("initial values:")
+    names(parm) = names(lower)
+    print(parm)
+    stop("Please specify lower to have the same length as the number of parameters to be estimated.")
+  }
+  if (length(upper) != length(parm)) {
+    message("The length of upper must must match the number of parameters to be estimated.")
+    message("upper:")
+    print(upper)
+    message("initial values:")
+    names(parm) = names(upper)
+    print(parm)
+    stop("Please specify upper to have the same length as the number of parameters to be estimated.")
+  }
+  for (i in seq_along(lower)) {
+    if (lower[i] > parm[i] | parm[i] > upper[i]) {
+      message("The initial parameter values are not within the specified bounds.")
+      combine = rbind(lower, parm, upper)
+      rownames(combine) = c("lower", "initial", "upper")
+      colnames(combine) = names(lower)
+      print(combine)
+      stop("Please specify lower and upper so that the initial starting values are between them or change your initial values.")
+    }
+  }
+}
+

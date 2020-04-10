@@ -25,16 +25,15 @@ object (\code{cmodMan}) for geostatistical data.
 \details{
 Note that \code{v} includes the error variance, i.e.,
 \code{v = vz + ve}, where \code{vz} is the covariance
-matrix of the filtered (measurement-error-free) process,
-and the variance matrix of the errors is \code{ve =
-diag(evar/weights)}, where the weights come from the
-\code{geolm} object the covariance object is associated
-with.
+matrix of the filtered process and the variance matrix
+of the errors is \code{ve = diag(evar/weights)}, where
+the \code{weights} come from the \code{geolm} object the
+\code{cmodMan} object is associated with.
 }
 \examples{
 coords = matrix(runif(6), ncol = 2)
 d = as.matrix(dist(coords))
-cmod_man(v = exp(-d), evar = 1) 
+cmod_man(v = exp(-d), evar = 1)
 }
 \author{
 Joshua French

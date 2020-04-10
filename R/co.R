@@ -1,16 +1,36 @@
 #' @name co
-#' @title Geochemical measurements for 960 sites in Colorado.
-#' @description These data were collected by the United States Geological Survey (USGS).  Their description is as follows:  In 2006, soil samples were collected at 960 sites (1 site per 280 square kilometers) throughout the state of Colorado. These samples were collected from a depth of 0 to 15 centimeters and, following a near-total multi-acid digestion, were analyzed for a suite of more than 40 major and trace elements. The resulting data set provides a baseline for the natural variation in soil geochemistry for Colorado and forms the basis for detecting changes in soil composition that might result from natural processes or anthropogenic activities. 
-#' 
-#' Latitude and Longitude determined by hand-held GPS instrument using WGS84 datum.  The longitude and latitude coordinates were converted to UTM coordinates using the following commands from the \code{sp} package:
-#' lonlat = co[, c("longitude", "latitude")]; 
-#' coordinates(lonlat) <- c("longitude", "latitude")
-#' proj4string(lonlat) <- CRS("+proj=longlat +datum=WGS84")  ## for example
-#' xy <- spTransform(lonlat, CRS("+proj=utm +zone=13 ellps=WGS84"))
-#' 
+#' @title Geochemical measurements for 960 sites in
+#'   Colorado.
+#' @description These data were collected by the United
+#'   States Geological Survey (USGS).  Their description is
+#'   as follows:  In 2006, soil samples were collected at
+#'   960 sites (1 site per 280 square kilometers) throughout
+#'   the state of Colorado. These samples were collected
+#'   from a depth of 0 to 15 centimeters and, following a
+#'   near-total multi-acid digestion, were analyzed for a
+#'   suite of more than 40 major and trace elements. The
+#'   resulting data set provides a baseline for the natural
+#'   variation in soil geochemistry for Colorado and forms
+#'   the basis for detecting changes in soil composition
+#'   that might result from natural processes or
+#'   anthropogenic activities.
+#'
+#' Latitude and Longitude determined by hand-held GPS
+#' instrument using WGS84 datum.  The longitude and latitude
+#' coordinates were converted to UTM coordinates using the
+#' following commands:
+#'
+#' \code{library(sp)}
+#'
+#' \code{lonlat = co[, c("longitude", "latitude")]}
+#'
+#' \code{coordinates(lonlat) = c("longitude", "latitude")}
+#'
+#' \code{proj4string(lonlat) = CRS("+proj=longlat +datum=WGS84")}
+#'
+#' \code{xy = spTransform(lonlat, CRS("+proj=utm +zone=13 ellps=WGS84"))}
 #' @docType data
 #' @usage data(co)
-#' 
 #' @format A data frame with 960 rows and 31 columns:
 #' \describe{
 #'  \item{easting}{Easting (m)}

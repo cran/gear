@@ -4,12 +4,14 @@
 \name{toydata}
 \alias{toydata}
 \title{A toy data set for examples}
-\format{A data frame with 25 rows and 3 columns:
+\format{
+A data frame with 25 rows and 3 columns:
 \describe{
  \item{y}{response}
  \item{x1}{coordinate dimension 1 values}
  \item{x2}{coordinate dimension 2 values}
-}}
+}
+}
 \usage{
 data(toydata)
 }

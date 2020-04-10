@@ -5,10 +5,10 @@
 arg_check_evar = function(evar) {
   if (!is.numeric(evar)) {
     stop("evar must be numeric")
-  } 
+  }
   if (length(evar) != 1) {
     stop("evar must be a single value")
-  } 
+  }
   if (evar < 0) {
     stop("evar must be non-negative")
   }
@@ -25,7 +25,7 @@ arg_check_split = function(split) {
 
   if (length(split) != 1) {
     stop("split must be a single value")
-  } 
+  }
   if (!is.logical(split)) {
     stop("split must be a logical value")
   }
@@ -38,14 +38,14 @@ arg_check_split = function(split) {
 arg_check_add_legend = function(add_legend) {
   if (length(add_legend) != 1) {
     stop("add_legend must be a single value")
-  } 
+  }
   if (!is.logical(add_legend)) {
     stop("add_legend must be a logical value")
   }
 }
 
 #' Argument check partial sill parameter
-#' 
+#'
 #' @param psill Partial sill
 #' @noRd
 arg_check_psill = function(psill) {
@@ -64,7 +64,7 @@ arg_check_psill = function(psill) {
 }
 
 #' Argument check range parameter
-#' 
+#'
 #' @param r Range parameter
 #' @noRd
 arg_check_r = function(r) {
@@ -89,10 +89,10 @@ arg_check_r = function(r) {
 arg_check_fvar = function(fvar) {
   if (!is.numeric(fvar)) {
     stop("fvar must be numeric")
-  } 
+  }
   if (length(fvar) != 1) {
     stop("fvar must be a single value")
-  } 
+  }
   if (fvar < 0) {
     stop("fvar must be non-negative")
   }
@@ -102,8 +102,8 @@ arg_check_fvar = function(fvar) {
 }
 
 #' Argument check par3
-#' 
-#' @param par3 3rd parameter 
+#'
+#' @param par3 3rd parameter
 #' @noRd
 arg_check_par3 = function(par3) {
   if (length(par3) != 1) {
@@ -134,7 +134,7 @@ arg_check_longlat = function(longlat) {
 }
 
 #' Argument check cmod_std
-#' 
+#'
 #' @param model standard covariance model
 #' @noRd
 arg_check_cmod_std_model = function(model) {
@@ -155,10 +155,10 @@ arg_check_cmod_std_model = function(model) {
 
 
 #' Argument check cmod_std
-#' 
+#'
 #' @param angle geometric anisotropy
 #' @return NULL
-#' @noRd 
+#' @noRd
 arg_check_angle = function(angle, radians) {
   if (length(angle) != 1) {
     stop("angle must be length 1")
@@ -178,10 +178,10 @@ arg_check_angle = function(angle, radians) {
 }
 
 #' Argument check ratio
-#' 
+#'
 #' @param ratio rmin/rmaj
 #' @return NULL
-#' @noRd 
+#' @noRd
 arg_check_ratio = function(ratio) {
   if (length(ratio) != 1) {
     stop("ratio must have length 1")
@@ -233,8 +233,8 @@ arg_check_f = function(f) {
   }
 }
 
-#' Argument check formula 
-#' 
+#' Argument check formula
+#'
 #' Make sure the formula is valid
 #'
 #' @param formula A formula
@@ -470,7 +470,7 @@ arg_check_sp = function(sp) {
 }
 
 
-#' Argument check dmethod argument 
+#' Argument check dmethod argument
 #'
 #' @param dmethod A single character
 #' @noRd
@@ -489,7 +489,7 @@ arg_check_dmethod = function(dmethod) {
   }
 }
 
-#' Argument check return_type argument 
+#' Argument check return_type argument
 #'
 #' @param return_type A single character
 #' @noRd
@@ -503,8 +503,8 @@ arg_check_return_type = function(return_type) {
   if (!is.character(return_type)) {
     stop("return_type must be of character type")
   }
-  if (!is.element(return_type, c("data.frame", "gearPredict", "SpatialPointsDataFrame", "sf"))) {
-    stop("return_type must be 'data.frame', 'gearPredict', 'SpatialPointsDataFrame', or 'sf'")
+  if (!is.element(return_type, c("data.frame", "gearPredict", "geardf", "SpatialPointsDataFrame", "sf"))) {
+    stop("return_type must be 'data.frame', 'gearPredict', 'geardf', 'SpatialPointsDataFrame', or 'sf'")
   }
 }
 
@@ -532,7 +532,7 @@ arg_check_nsim = function(nsim) {
 
 #' Check newdata argument
 #'
-#' @param nsim A two-d data.frame 
+#' @param nsim A two-d data.frame
 #' @param coordnames coordinate names that must be in newdata
 #' @noRd
 arg_check_newdata = function(newdata, coordnames) {
@@ -556,5 +556,49 @@ arg_check_compute_mspe = function(compute_mspe) {
   if (!is.logical(compute_mspe)) {
     stop("compute_mspe must be a logical value")
   }
+}
+
+#' Check coordnames argument and return vector of coordinate names
+#'
+#' @param coordnames A vector with the names of the coordinates
+#' @param data_colnames A vector with the column names of data
+#' @return A vector of coordinate names
+#' @noRd
+arg_check_coordnames = function(coordnames, data_colnames) {
+  if (!(class(coordnames)[1] == "formula") &
+      !is.character(coordnames) &
+      !is.numeric(coordnames)) {
+    error_message = paste("coordnames must indicate the coordinate columns of data through:\n",
+                          "1. a formula (e.g., ~ lon + lat)\n",
+                          "2. a character vector of column names (e.g., c('lon', 'lat'))\n",
+                          "3. a numeric vector of column indices (e.g., 3:4)", sep = "")
+    stop(error_message)
+  }
+
+  # get correct columns if coordnames is a formula
+  if (class(coordnames) == "formula") {
+    coordnames = labels(stats::terms(coordnames))
+  }
+  if (length(coordnames) != 2) {
+    stop("coordnames must refer to only two columns of data")
+  }
+  if (is.numeric(coordnames)) {
+    if (min(coordnames) < 1) {
+      stop("The indices of numeric of coordnames must be >= 1")
+    }
+    coordnames = data_colnames[coordnames]
+    if (max(is.na(coordnames)) == 1) {
+      error_message = paste("The indices specified in coordnames appear to be invalid.\n",
+                            "The command names(data)[coordnames] returns: ",
+                            coordnames[1], " ", coordnames[2], sep = "")
+      stop(error_message)
+    }
+  }
+  if (is.character(coordnames)) {
+    if (min(is.element(coordnames, data_colnames)) == 0) {
+      stop("The names in coordnames are not found in the column names of data")
+    }
+  }
+  return(coordnames)
 }
 

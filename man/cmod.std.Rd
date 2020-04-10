@@ -7,13 +7,15 @@
 cmod.std(model, psill, r, evar = 0, fvar = 0, par3 = 0.5)
 }
 \arguments{
-\item{model}{A standard covariance model type.}
+\item{model}{A covariance model (e.g.,
+\code{"exponential"}). See Details for the complete
+list of choices.}
 
 \item{psill}{The partial sill of the model.  Must be a
 positive number.}
 
-\item{r}{The range parameter r.  Must be a positive
-number.}
+\item{r}{The range parameter \code{r}.  Must be a
+positive number.}
 
 \item{evar}{The variance of the errors.  Must be
 non-negative number.  The default is 0.}

@@ -3,11 +3,12 @@
 #' Creates a standard covariance model (\code{cmodStd})
 #' object for geostatistical data.
 #'
-#' The general form of the specified covariance function is
+#' The general, isotropic form of the specified covariance function is
 #' \code{psill} * \eqn{\rho}(\code{d}; \code{r}) +
-#' (\code{evar} + \code{fvar})*(\code{d==0}), where
-#' \eqn{\rho} is the covariance function of the parametric
-#' models.
+#' (\code{evar} + \code{fvar}) * (\code{d == 0}), where
+#' \eqn{\rho} is the correlation function of the parametric
+#' models and \code{d} is the distance between the
+#' relevant coordinates.
 #'
 #' For the \code{exponential} model, \eqn{\rho}(\code{d};
 #' \code{r}) is exp(-\code{d}/\code{r}).
@@ -50,11 +51,13 @@
 #' 5*sd^4 + 5/6*sd^5)} if \code{d < r}, and 0 otherwise,
 #' with \code{sd = d/r}.
 #'
-#' @param model A standard covariance model type.
+#' @param model A covariance model (e.g.,
+#'   \code{"exponential"}). See Details for the complete
+#'   list of choices.
 #' @param psill The partial sill of the model.  Must be a
 #'   positive number.
-#' @param r The range parameter r.  Must be a positive
-#'   number.
+#' @param r The range parameter \code{r}.  Must be a
+#'   positive number.
 #' @param evar The variance of the errors.  Must be
 #'   non-negative number.  The default is 0.
 #' @param fvar The finescale variance (microscale error).
@@ -66,11 +69,11 @@
 #'   circle distance should be used. The default is
 #'   \code{FALSE}.
 #' @param angle The major axis of geometric anisotropy (the
-#' direction of strongest spatial dependence). Must be
-#' between [0, 180) if \code{radians = FALSE}, otherwise
-#' it must be between [0, pi).
+#'   direction of strongest spatial dependence). Must be
+#'   between [0, 180) if \code{radians = FALSE}, otherwise
+#'   it must be between [0, \eqn{\pi}).
 #' @param ratio The ratio of the minor axis range over the
-#' major axis range. The value must be between (0, 1].
+#'   major axis range. The value must be between (0, 1].
 #' @inheritParams angle2d
 #' @return Returns a \code{cmodStd} object.
 #'
@@ -97,3 +100,37 @@ cmod_std = function(model, psill, r, evar = 0,
                  invert = invert),
             class = "cmodStd")
 }
+
+#' Argument check cmod_std
+#' @param model A standard covariance model type.
+#' @param psill The partial sill of the model.  Must be a
+#'   positive number.
+#' @param r The range parameter r.  Must be a positive
+#'   number.
+#' @param evar The variance of the errors.  Must be a
+#'   non-negative number.  The default is 0.
+#' @param fvar The finescale variance (microscale error).
+#'   Must be a non-negative number.  The default is 0.
+#' @param par3 The value of the third parameter for 3
+#'   parameter models.  Must be a positive number.  The
+#'   default is 0.5.
+#' @param longlat A logical value indicating whether great
+#'   circle distance should be used. The default is
+#'   \code{FALSE}.
+#' @noRd
+arg_check_cmod_std = function(model, psill, r, evar,
+                              fvar, par3, longlat, angle,
+                              ratio, radians, invert) {
+  arg_check_cmod_std_model(model)
+  arg_check_psill(psill)
+  arg_check_r(r)
+  arg_check_evar(evar)
+  arg_check_fvar(fvar)
+  arg_check_par3(par3)
+  arg_check_longlat(longlat)
+  arg_check_radians(radians)
+  arg_check_angle(angle, radians)
+  arg_check_ratio(ratio)
+  arg_check_invert(invert)
+}
+

@@ -30,7 +30,7 @@
 #'   \code{"\link[sp]{SpatialPointsDataFrame}"} for easy
 #'   plotting of results (see Examples). Other options
 #'   include \code{"\link[base]{data.frame}"},
-#'   \code{"gearPredict"}, and \code{"\link[sf]{sf}"}.
+#'   \code{"\link[gear]{geardf}"}, and \code{"\link[sf]{sf}"}.
 #' @param dmethod The method used to decompose the
 #'   covariance matrix for conditional simulation.  Valid
 #'   options are \code{"chol"}, \code{"eigen"}, and
@@ -43,16 +43,17 @@
 #'   value indicating whether to object returned should be
 #'   of class \code{\link[sp]{SpatialPointsDataFrame}} for
 #'   easier plotting with the \code{sp} package.  Default is
-#'   \code{TRUE}.
+#'   \code{NULL}.
 #' @param ... Currently unimplemented.
 #'
-#' @return A \code{data.frame},
-#'   \code{SpatialPointsDataFrame}, \code{"gearPredict"}, or
-#'   \code{sf} object with the kriging predictions
+#' @return A \code{\link[base]{data.frame}},
+#'   \code{\link[sp]{SpatialPointsDataFrame}},
+#'   \code{\link[gear]{geardf}}, or \code{\link[sf]{sf}}
+#'   object with the kriging predictions
 #'   \code{pred}, kriging variance/mean-square prediction
 #'   error (\code{mspe}), the root mean-square prediction
 #'   error \code{mspe} (\code{rmspe}), and the conditional
-#'   simulation \code{sim.1}, \code{sim.2}, etc.
+#'   simulations \code{sim.1}, \code{sim.2}, etc.
 #'   \code{sim.1}, \code{sim.2}, etc.
 #'
 #' @author Joshua French
@@ -90,8 +91,8 @@
 #' newdata = data.frame(x1 = c(x1, runif(5)), x2 = c(x2, runif(5)))
 #' newcoords = newdata[, cnames]
 #' # create vop and vp using distances
-#' dop = sp::spDists(as.matrix(coords), as.matrix(newcoords))
-#' dp = as.matrix(dist(newcoords))
+#' dop = geodist(as.matrix(coords), as.matrix(newcoords))
+#' dp = geodist(newcoords)
 #'
 #' # manually create cross-covariance and covariance for
 #' # prediction locations
@@ -102,8 +103,6 @@
 #' # using manual covariance matrices
 #' pred_uk_man = predict(gearmod_uk, newdata, nsim = 2,
 #'                       vop = vop, vp = vp, dmethod = "svd")
-#' # plot prediction values using sp package
-#' sp::spplot(pred_uk_man, "pred")
 #'
 #' # do the same thing, but using cmod_std
 #'
@@ -117,7 +116,6 @@
 #' # compare results
 #' all.equal(pred_uk_man$pred, pred_uk_std$pred)
 #' all.equal(pred_uk_man$mspe, pred_uk_std$mspe)
-#' @rdname predict.geolmMan
 #' @export
 predict.geolm_cmodMan =
   function(object, newdata, nsim = 0, vop, vp,
@@ -133,6 +131,10 @@ predict.geolm_cmodMan =
                           return_type = return_type,
                           dmethod = dmethod,
                           compute_mspe = compute_mspe)
+  if (return_type == "gearPredict") {
+    warning("The 'gearPredict' return_type is being deprecated in favor of the 'geardf' return_type for easier plotting. See the Examples in predict.geolm_cmodStd or plot.geardf.")
+    return_type = "geardf"
+  }
   arg_check_predict_geolm_cmodMan(y = object$y, vop = vop,
                                   vp = vp)
   newcoords = as.matrix(newdata[,object$coordnames])
@@ -214,6 +216,38 @@ predict.geolm_cmodMan =
   if (return_type == "data.frame") {
     return(kdtf)
   } else {
-    return(return_predict_geolm(kdtf, newcoords, return_type))
+    return(return_predict_geolm(kdtf, newcoords, return_type, object$coordnames))
   }
 }
+
+#' Check additional argument of predict.geolm_cmodMan
+#'
+#' @param y Vector of observed responses
+#' @param vop Cross-covariance matrix
+#' @param vp Covariance matrix of responses to be predicted
+#' @noRd
+arg_check_predict_geolm_cmodMan = function(y, vop, vp) {
+  if (!is.matrix(vop)) {
+    stop("vop must be a matrix")
+  }
+  if (length(dim(vop)) != 2) {
+    stop("vop must be two-dimensional")
+  }
+  if (!is.matrix(vp)) {
+    stop("vp must be a matrix")
+  }
+  if (length(dim(vp)) != 2) {
+    stop("vp must be two-dimensional")
+  }
+  if (nrow(vp) != ncol(vp)) {
+    stop("vp must be a square matrix")
+  }
+  if (nrow(vop) != length(y)) {
+    stop("nrow(vop) != length(object$y)")
+  }
+  if (ncol(vop) != nrow(vp)) {
+    stop("nrow(vop) != nrow(vp). They must match for compatibility.")
+  }
+}
+
+

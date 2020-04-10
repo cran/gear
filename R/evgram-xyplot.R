@@ -2,7 +2,11 @@
 #'
 #' Plots \code{evgram} object produced by the
 #' \code{\link[gear]{evgram}} function using the
-#' \code{\link[lattice]{xyplot}} function.
+#' \code{\link[lattice]{xyplot}} function. Note: the
+#' \code{lattice} package must be loaded (i.e.,
+#' \code{library(lattice)} or \code{lattice::xyplot}
+#' must be specifically called for this function to work.
+#' See Examples.
 #'
 #' @param x An \code{evgram} object produced by the \code{\link[gear]{evgram}} function.
 #' @param ... Additional arguments to pass the \code{\link[lattice]{xyplot}} function to change aspects of the plot.
@@ -11,26 +15,32 @@
 #' in a single or split panels.  Default is FALSE, for a single panel.
 #' @return NULL
 #' @author Joshua French
-#' @method xyplot evgram
 #' @export
 #' @seealso \code{\link[lattice]{xyplot}}, \code{\link[gear]{evgram}}
 #' @examples
 #' data(co)
 #' v = evgram(Al ~ 1, co, ~ easting + northing)
-#' xyplot(v)
+#' if (requireNamespace("lattice")) {
+#'    lattice::xyplot(v)
+#' }
 #' v2 = evgram(Al ~ 1, co, ~ easting + northing, angle = 22.5, ndir = 4)
-#' xyplot(v2)
-#' # show how attributes can be changed using different arguments
-#' # available in lattice::xyplot.
-#' xyplot(v2, col = 2:5)
-#' xyplot(v2, col = 2:5, pch = 1:4)
-#' xyplot(v2, col = 2:5, pch = 1:4, lty = 2:5, type = "b")
-#' xyplot(v2, col = 2:5, pch = 1:4, lty = 2:5, type = "b",
-#'  key=list(text=list(levels(as.factor(v2$semi$angle))),
-#'  space='right', points=list(pch=1:4, col=2:5),
-#'  lines=list(col=2:5, lty = 2:5)))
-#' xyplot(v2, split = TRUE)
+#' if (requireNamespace("lattice")) {
+#'    lattice::xyplot(v2)
+#'    # show how attributes can be changed using different
+#'    # arguments available in lattice::xyplot.
+#'    lattice::xyplot(v2, col = 2:5)
+#'    lattice::xyplot(v2, col = 2:5, pch = 1:4)
+#'    lattice::xyplot(v2, col = 2:5, pch = 1:4, lty = 2:5, type = "b")
+#'    lattice::xyplot(v2, col = 2:5, pch = 1:4, lty = 2:5, type = "b",
+#'     key=list(text=list(levels(as.factor(v2$semi$angle))),
+#'     space='right', points=list(pch=1:4, col=2:5),
+#'     lines=list(col=2:5, lty = 2:5)))
+#'    lattice::xyplot(v2, split = TRUE)
+#' }
 xyplot.evgram = function(x, ..., split = FALSE) {
+  if (!requireNamespace("lattice")) {
+    stop("lattice must be installed to enable this functionality")
+  }
   arg_check_split(split)
   largs = list(...)
   if (is.null(largs$xlim)) {

@@ -3,8 +3,10 @@
 \docType{data}
 \name{co}
 \alias{co}
-\title{Geochemical measurements for 960 sites in Colorado.}
-\format{A data frame with 960 rows and 31 columns:
+\title{Geochemical measurements for 960 sites in
+  Colorado.}
+\format{
+A data frame with 960 rows and 31 columns:
 \describe{
  \item{easting}{Easting (m)}
  \item{northing}{Northing (m)}
@@ -37,7 +39,8 @@
  \item{V}{vanadium (mg/kg)}
  \item{W}{tungsten (mg/kg)}
  \item{Y}{yttrium (mg/kg)}
-}}
+}
+}
 \source{
 U.S. Geological Survey, Data Series 520, 9 p.  \url{http://pubs.usgs.gov/ds/520/}.
 }
@@ -45,13 +48,34 @@ U.S. Geological Survey, Data Series 520, 9 p.  \url{http://pubs.usgs.gov/ds/520/
 data(co)
 }
 \description{
-These data were collected by the United States Geological Survey (USGS).  Their description is as follows:  In 2006, soil samples were collected at 960 sites (1 site per 280 square kilometers) throughout the state of Colorado. These samples were collected from a depth of 0 to 15 centimeters and, following a near-total multi-acid digestion, were analyzed for a suite of more than 40 major and trace elements. The resulting data set provides a baseline for the natural variation in soil geochemistry for Colorado and forms the basis for detecting changes in soil composition that might result from natural processes or anthropogenic activities. 
+These data were collected by the United
+  States Geological Survey (USGS).  Their description is
+  as follows:  In 2006, soil samples were collected at
+  960 sites (1 site per 280 square kilometers) throughout
+  the state of Colorado. These samples were collected
+  from a depth of 0 to 15 centimeters and, following a
+  near-total multi-acid digestion, were analyzed for a
+  suite of more than 40 major and trace elements. The
+  resulting data set provides a baseline for the natural
+  variation in soil geochemistry for Colorado and forms
+  the basis for detecting changes in soil composition
+  that might result from natural processes or
+  anthropogenic activities.
 
-Latitude and Longitude determined by hand-held GPS instrument using WGS84 datum.  The longitude and latitude coordinates were converted to UTM coordinates using the following commands from the \code{sp} package:
-lonlat = co[, c("longitude", "latitude")]; 
-coordinates(lonlat) <- c("longitude", "latitude")
-proj4string(lonlat) <- CRS("+proj=longlat +datum=WGS84")  ## for example
-xy <- spTransform(lonlat, CRS("+proj=utm +zone=13 ellps=WGS84"))
+Latitude and Longitude determined by hand-held GPS
+instrument using WGS84 datum.  The longitude and latitude
+coordinates were converted to UTM coordinates using the
+following commands:
+
+\code{library(sp)}
+
+\code{lonlat = co[, c("longitude", "latitude")]}
+
+\code{coordinates(lonlat) = c("longitude", "latitude")}
+
+\code{proj4string(lonlat) = CRS("+proj=longlat +datum=WGS84")}
+
+\code{xy = spTransform(lonlat, CRS("+proj=utm +zone=13 ellps=WGS84"))}
 }
 \references{
 Smith, D.B., Ellefsen, K.J., and Kilburn, J.E., 2010, Geochemical data for Colorado soils -- Results from the 2006 state-scale geochemical survey: U.S. Geological Survey, Data Series 520, 9p.

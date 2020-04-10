@@ -16,14 +16,14 @@ gear_cov_aniso = vector("list", length(evar) * length(mod))
 for (i in 1:length(mod)) {
   for (j in 1:length(evar))   {
     count = count + 1
-    cmod = cmod_std(model = mod[i], 
+    cmod = cmod_std(model = mod[i],
                     par3 = par3[j],
-                    psill = psill[j], 
-                    r = r[j], 
+                    psill = psill[j],
+                    r = r[j],
                     evar = evar[j],
                     fvar = fvar[j],
                     angle = gangle[j],
-                    ratio = gratio[j], 
+                    ratio = gratio[j],
                     invert = TRUE)
     d = ganiso_d(coords, coords, invert = TRUE)
     gear_cov_aniso[[count]] = evaluate(cmod, d)
@@ -39,18 +39,18 @@ count = 0
 gear_crosscov_aniso = vector("list", length(gratio))
 geoR_crosscov_aniso = vector("list", length(gratio))
 for (j in seq_along(gratio))   {
-  cmod = cmod_std(model = "exponential", 
+  cmod = cmod_std(model = "exponential",
                   par3 = par3[j],
-                  psill = psill[j], 
-                  r = r[j], 
+                  psill = psill[j],
+                  r = r[j],
                   evar = 0,
                   fvar = 0,
                   angle = gangle[j],
-                  ratio = gratio[j], 
+                  ratio = gratio[j],
                   invert = TRUE)
   d = ganiso_d(coords, pcoords, invert = TRUE)
   gear_crosscov_aniso[[j]] = evaluate(cmod, d)
-  geoR_d = sp::spDists(geoR_coords_aniso[[j]], geoR_pcoords_aniso[[j]])
+  geoR_d = geodist(geoR_coords_aniso[[j]], geoR_pcoords_aniso[[j]])
   geoR_crosscov_aniso[[j]] = psill[j] * exp(-geoR_d/(r[j] * gratio[j]))
 }
 

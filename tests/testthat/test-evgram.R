@@ -5,10 +5,17 @@ load(fpath)
 test_that("check accuracy of evgram function", {
   # for omnidirectional standard semivarigoram
   gear_v1 = evgram(cadmium ~ 1, meuse, nbins = 10, verbose = FALSE)
+
   expect_equal(gear_v1$semi$np, gstat_v1$np)
   expect_equal(gear_v1$semi$dist, gstat_v1$dist)
   # expect_true(max(abs(gear_v1$semi$semivariance - gstat_v1$gamma)) < 1e-10)
   expect_equal(gear_v1$semi$semivariance, gstat_v1$gamma)
+
+  gear_v1b = evgram(cadmium ~ 1, meuse_df,
+                    coordnames = ~ x + y, nbins = 10,
+                    verbose = FALSE)
+  # make sure estimated semivariogram matches
+  expect_equal(gear_v1$semi, gear_v1b$semi)
 
   # for omnidirectional cressie semivarigoram
   gear_v2 = evgram(cadmium ~ 1, meuse, nbins = 10, type = "cressie", verbose = FALSE)

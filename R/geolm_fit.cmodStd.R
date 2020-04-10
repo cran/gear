@@ -21,7 +21,7 @@ geolm_fit.cmodStd <- function(x, y, coords, mu, mod, weights, formula, coordname
     d = ganiso_d(coords, coords, radians = TRUE,
                  invert = mod$invert)
   } else {
-    d = sp::spDists(as.matrix(coords), longlat = mod$longlat)
+    d = geodist(as.matrix(coords), longlat = mod$longlat)
   }
 
   # create covariance matrix for observed data

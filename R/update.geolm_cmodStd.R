@@ -12,7 +12,7 @@ update.geolm_cmodStd = function(object, mod, ...) {
   if (mod$ratio < 1) {
     d = ganiso_d(object$coords, object$coords, invert = mod$invert)
   } else {
-    d = sp::spDists(as.matrix(object$coords), longlat = mod$longlat)
+    d = geodist(as.matrix(object$coords), longlat = mod$longlat)
   }
 
   # create covariance matrix for observed data

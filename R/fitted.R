@@ -10,7 +10,7 @@
 #' \code{object$mu} is not \code{NULL}, then the function
 #' returns the vector \code{rep(object$mu, m)}. If
 #' \code{object} has estimated coefficients, then \code{x
-#' \%*\% object$coeff)} is returned.
+#' \%*\% object$coeff} is returned.
 #'
 #' If \code{x} is missing, then \code{object$x} is used for
 #' \code{x}. Naturally, \code{ncol(x)} must equal
@@ -21,7 +21,7 @@
 #' @param object An object produced by the
 #'   \code{\link[gear]{geolm}} function.
 #' @param x A \eqn{m \times p} matrix of covariates for the
-#'   locations where fitted values are desired. If 
+#'   locations where fitted values are desired. If
 #'   \code{NULL}, \code{object$x} is used.
 #' @param ... Not currently implemented.
 #' @return The vector of fitted values.
@@ -49,6 +49,27 @@ fitted.geolm = function(object, x, ...) {
     return(c(x %*% object$coeff))
   } else {
     return(rep(object$mu, m))
+  }
+}
+
+#' Check arguments of fitted.geolm
+#'
+#' @param object geolm object
+#' @param x Matrix of covariates or NULL
+#' @noRd
+arg_check_fitted_geolm = function(object, x){
+  if (is.null(object$mu)) {
+    if (!is.matrix(x)) {
+      stop("x must be a matrix")
+    }
+    if (nrow(x) == 0) {
+      stop("x must have at least one row")
+    }
+    p = length(object$coeff)
+    if (is.matrix(object$coeff)) { p = nrow(object$coeff) }
+    if (ncol(x) != p) {
+      stop("ncol(x) != number of regression coefficients")
+    }
   }
 }
 

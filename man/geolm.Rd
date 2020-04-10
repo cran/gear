@@ -24,9 +24,10 @@ this function and \code{\link[stats]{lm}}.}
 \item{data}{A data frame containing the response,
 covariates, and location coordinates.}
 
-\item{coordnames}{A vector of length 2 with the names of
-the columns in \code{data} containing the coordinates,
-e.g., \code{c("long", "lat")}.}
+\item{coordnames}{The columns of \code{data} containing
+the spatial coordinates, provided as a formula (e.g.,
+\code{~ x + y}), column numbers (e.g., \code{c(1, 2)}),
+or column names (e.g., \code{c("x", "y")})}
 
 \item{mod}{A model object produced by one
 of the \code{cmod_*} functions, e.g.,
@@ -44,9 +45,10 @@ mean of the spatial process if simple kriging is
 desired.  Default is \code{NULL}, meaning that ordinary
 or universal kriging should be used.}
 
-\item{longlat}{A logical value indicating whether great
-circle distance should be used. The default is
-\code{FALSE}.}
+\item{longlat}{A logical indicating whether Euclidean
+(\code{FALSE}) or Great Circle distance (WGS84
+ellipsoid) (\code{longlat = TRUE}) should be used.
+Default is \code{FALSE}.}
 
 \item{cmod}{Retained for backwards compatibility. A model object produced by one
 of the \code{cmod_*} functions, e.g.,
@@ -77,7 +79,7 @@ If \code{mu} is provided, the variables to the right of
 \examples{
 data = data.frame(y = rnorm(10), x1 = runif(10),
                  x2 = runif(10))
-d = as.matrix(dist(data[,c("x1", "x2")]))
+d = geodist(data[,c("x1", "x2")])
 mod = cmod_man(v = exp(-d), evar = 1)
 gearmod = geolm(y ~ x1, data = data,
                 coordnames = ~ x1 + x2, mod = mod)

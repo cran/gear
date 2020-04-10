@@ -19,7 +19,7 @@ cmod_std = cmod_std("exponential", psill = psill, r = r,
                     evar = evar, fvar = fvar)
 cmod_std0 = cmod_std
 cmod_std0$evar = 0
-v1 = evaluate(cmod_std0, d = sp::spDists(coords)) +
+v1 = evaluate(cmod_std0, d = geodist(coords)) +
               evar * diag(10)
 cmod_man = cmod_man(v = v1, evar = cmod_std$evar)
 cmod_std2 = cmod_std("exponential", psill = psill + 1, r = r + .5,
@@ -27,7 +27,7 @@ cmod_std2 = cmod_std("exponential", psill = psill + 1, r = r + .5,
 cmod_std20 = cmod_std
 cmod_std20$evar = 0
 v2 = evaluate(cmod_std20,
-              d = sp::spDists(coords)) +
+              d = geodist(coords)) +
               cmod_std2$evar * diag(10)
 cmod_man2 = cmod_man(v = v2, evar = cmod_std2$evar)
 

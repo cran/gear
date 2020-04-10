@@ -4,7 +4,7 @@
 \alias{autoplot.evgram}
 \title{Plot \code{evgram} object}
 \usage{
-\method{autoplot}{evgram}(object, ..., split = FALSE)
+autoplot.evgram(object, ..., split = FALSE)
 }
 \arguments{
 \item{object}{An \code{evgram} object produced by the
@@ -18,18 +18,27 @@ semivariograms should be displayed in a single or split
 panels.  Default is \code{FALSE}, for a single panel.}
 }
 \description{
-Plots object of class '\code{evgram}' produced by the
+Plot an \code{evgram} object produced by the
 \code{\link[gear]{evgram}} function. The plotting
 function internally calls the
-\code{\link[lattice]{xyplot}} function.
+\code{\link[ggplot2]{autoplot}} function. Note: the
+\code{ggplot2} package must be loaded (i.e.,
+\code{library(autplot)} or \code{ggplot2::autoplot}
+must be specifically called for this function to work.
+See Examples.
 }
 \examples{
 data(co)
 v = evgram(Al ~ 1, co, ~ easting + northing)
-autoplot(v)
+if (requireNamespace("ggplot2")) {
+   ggplot2::autoplot(v)
+}
 v2 = evgram(Al ~ 1, co, ~ easting + northing, angle = 22.5, ndir = 4)
-autoplot(v2)
-autoplot(v2, split = TRUE)
+# ggplot2 must manually be loaded for this to work
+if (requireNamespace("ggplot2")) {
+   ggplot2::autoplot(v2)
+   ggplot2::autoplot(v2, split = TRUE)
+}
 }
 \author{
 Joshua French

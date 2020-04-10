@@ -1,11 +1,20 @@
 #' Predict method for geostatistical models
 #'
-#' \code{predict} calculates the predicted values at specified locations.  The method can additionally provide the mean square prediction error (mspe) and perform conditional simulation.
+#' \code{predict} calculates the predicted values at
+#' specified locations.  The method can additionally provide
+#' the mean square prediction error (mspe) and perform
+#' conditional simulation.
 #'
-#' The \code{newdata} data frame must include the relevant covariates for the prediction locations, where the covariates are specified on the right side of the \code{~} in \code{object$formula}.  \code{newdata} must also include the coordinates of the prediction locations, with these columns having the names provided in \code{object$coordnames}.
+#' The \code{newdata} data frame must include the relevant
+#' covariates for the prediction locations, where the
+#' covariates are specified on the right side of the
+#' \code{~} in \code{object$formula}.  \code{newdata} must
+#' also include the coordinates of the prediction locations,
+#' with these columns having the names provided in
+#' \code{object$coordnames}.
 #'
 #' @inheritParams predict.geolm_cmodMan
-#' @inheritDotParams predict.geolm_cmodMan
+#' @param ... Currently unimplemented.
 #' @inherit predict.geolm_cmodMan return
 #' @author Joshua French
 #' @examples
@@ -28,6 +37,27 @@
 #' # prediction for universal kriging, with conditional simulation
 #' pred_uk = predict(gearmod_uk, newdata, nsim = 2)
 #'
+#' # demonstrate plotting abilities if return_type == "geardf"
+#'  pred_geardf = predict(gearmod_uk, newdata,
+#'                return_type = "geardf")
+#'  plot(pred_geardf, "pred")
+#'  plot(pred_geardf, interp = TRUE)
+#'
+#' # demonstrate plotting abilities if sp package installed
+#' if (requireNamespace("sp", quietly = TRUE)) {
+#'  pred_spdf = predict(gearmod_uk, newdata,
+#'              return_type = "SpatialPointsDataFrame")
+#'  sp::spplot(pred_spdf, "pred")
+#'  sp::spplot(pred_spdf)
+#' }
+#' # demonstrate plotting abilities if sf package installed
+#' if (requireNamespace("sf", quietly = TRUE)) {
+#'  pred_sfdf = predict(gearmod_uk, newdata,
+#'              return_type = "sf")
+#'  plot(pred_sfdf["pred"])
+#'  plot(pred_sfdf)
+#' }
+#'
 #' # geolm for ordinary kriging
 #' gearmod_ok = geolm(y ~ 1, data = data, mod = mod,
 #'                    coordnames = c("x1", "x2"))
@@ -39,8 +69,8 @@
 #'                  coordnames = c("x1", "x2"), mu = 1)
 #'# prediction for simple kriging
 #' pred_sk = predict(gearmod_sk, newdata)
-#' @rdname predict.geolm_cmodStd
-#' @export
+#'@rdname predict.geolm_cmodStd
+#'@export
 predict.geolm_cmodStd = function(object, newdata, nsim = 0,
                             return_type = "SpatialPointsDataFrame",
                             dmethod = "chol",
@@ -54,16 +84,19 @@ predict.geolm_cmodStd = function(object, newdata, nsim = 0,
                           return_type = return_type,
                           dmethod = dmethod,
                           compute_mspe = compute_mspe)
-  newcoords = as.matrix(newdata[,object$coordnames])
+  if (return_type == "gearPredict") {
+    warning("The 'gearPredict' return_type is being deprecated in favor of the 'geardf' return_type for easier plotting. See the Examples in predict.geolm_cmodStd or plot.geardf.")
+    return_type = "geardf"
+  }
+  newcoords = as.matrix(newdata[, object$coordnames])
   if (object$mod$ratio < 1) {
     vop = evaluate(mod = object$mod, e = FALSE,
                    d = ganiso_d(object$coords, newcoords,
                                 invert = object$mod$invert))
   } else {
     vop = evaluate(mod = object$mod, e = FALSE,
-                   d = sp::spDists(object$coords,
-                                   newcoords,
-                                   longlat = object$mod$longlat))
+                   d = geodist(object$coords, newcoords,
+                               longlat = object$mod$longlat))
   }
 
   # unneeded if simple kriging
@@ -82,7 +115,7 @@ predict.geolm_cmodStd = function(object, newdata, nsim = 0,
                                  invert = object$mod$invert))
     } else {
       vp = evaluate(mod = object$mod, e = FALSE,
-                    d = sp::spDists(newcoords, longlat = object$mod$longlat))
+                    d = geodist(newcoords, longlat = object$mod$longlat))
     }
 
     n = nrow(object$coords); m = nrow(newcoords)
@@ -146,7 +179,7 @@ predict.geolm_cmodStd = function(object, newdata, nsim = 0,
   if (return_type == "data.frame") {
     return(kdtf)
   } else {
-    return(return_predict_geolm(kdtf, newcoords, return_type))
+    return(return_predict_geolm(kdtf, newcoords, return_type, object$coordnames))
   }
 }
 

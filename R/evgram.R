@@ -1,17 +1,22 @@
 #' Empirical (semi-)variogram
 #'
-#' \code{evgram} computes the empirical semivariogram. The
-#' variogram is twice the semivariogram.
+#' \code{evgram} computes the empirical semivariogram of
+#' \code{data} based on the specified \code{formula}
+#' indicating the response and trend. See Details. The
+#' variogram is twice the semivariogram. If a trend is
+#' specified, then the semivariogram is constructed using
+#' the residuals of \code{lm(formula, data)}.
 #'
 #' Note that the directions may be different from other
 #' packages (e.g., \code{gstat} or \code{geoR} packages)
 #' because those packages calculate angles clockwise from
 #' the y-axis, which is a convention frequently seen in
-#' geostatistics (e.g., the GSLIB software library).
+#' geostatistics (e.g., the GSLIB software library). If
+#' \code{invert = TRUE}, the directions should be the same.
 #'
 #' Computing the empirical semivariogram for the residuals
 #' of \code{lm(response ~ 1)} will produce identical results
-#' to simply computing the sample semivariogram from the
+#' to simply computing the empirical semivariogram from the
 #' original response. However, if a trend is specified (the
 #' righthand side of ~ has non-trival covariates), then the
 #' empirical semivariogram of the residuals will differ
@@ -33,7 +38,7 @@
 #'   or column names (e.g., \code{c("x", "y")}). The default
 #'   is \code{NULL}.
 #' @param nbins The number of bins (tolerance regions) to
-#'   use when estimating the sample semivariogram.
+#'   use when estimating the empirical semivariogram.
 #' @param maxd The maximum distance used when calculating
 #'   the semivariogram.  Default is NULL, in which case half
 #'   the maximum distance between coordinates is used.
@@ -41,7 +46,7 @@
 #'   starting direction for a directional variogram.  The
 #'   default is 0.
 #' @param ndir The number of directions for which to
-#'   calculate a sample semivariogram.  The default is 1,
+#'   calculate a empirical semivariogram.  The default is 1,
 #'   meaning calculate an omnidirectional semivariogram.
 #' @param type The name of the estimator to use in the
 #'   estimation process.  The default is \code{"standard"}, the
@@ -76,15 +81,21 @@ evgram = function(formula, data, coordnames = NULL, nbins = 10,
                   longlat = FALSE,
                   verbose = TRUE,
                   invert = TRUE) {
+
   arg_check_evgram(formula, data, coordnames, nbins, maxd,
                    angle, ndir, type, npmin, verbose)
   id = all.vars(formula)[1]
+  # if data is a regular data frame, determine the coordnames
+  # and extract the coords
   if (is.data.frame(data)) {
-    sp::coordinates(data) = coordnames
+    coordnames = arg_check_coordnames(coordnames, names(data))
+    coords = as.matrix(data[,coordnames])
+  } else {
+    # data is a SpatialPointsDataFrame, etc.
+    coordnames = sp::coordnames(data)
+    coords = sp::coordinates(data)
   }
 
-  # extract coordinates, determine number of coordinates
-  coords = sp::coordinates(data)
   # number of observations
   N = nrow(coords)
   # extract (residual) response
@@ -99,13 +110,13 @@ evgram = function(formula, data, coordnames = NULL, nbins = 10,
                   "using", type, "estimator"))
   }
 
-  # create indexes to use in building of sample semivariograms
+  # create indexes to use in building of empirical semivariograms
   idx1 = rep(1:(N - 1), times = (N - 1):1)
   idx2 = unlist(sapply(1:(N - 1), function(i) (1:N)[-(1:i)]))
 
   # distances for unique pairs of points
   # d2 = c(dist(coords))
-  d = sp::spDists(as.matrix(coords), longlat = longlat)
+  d = geodist(as.matrix(coords), longlat = longlat)
   d = c(d[lower.tri(d)])
 
   # difference of unique pairs of points
@@ -177,3 +188,50 @@ evgram = function(formula, data, coordnames = NULL, nbins = 10,
   class(out) = "evgram"
   return(out)
 }
+
+
+arg_check_evgram = function(formula, data, coordnames,
+                            nbins, maxd, angle, ndir, type,
+                            npmin, verbose) {
+  arg_check_formula(formula)
+  if (!is.element(class(data), c("data.frame", "SpatialPointsDataFrame", "SpatialGridDataFrame", "SpatialPixelsDataFrame"))) {
+    stop("data not of appropriate class.  Should be of class data.frame, SpatialPointsDataFrame, SpatialGridDataFrame, or SpatialPixelsDataFrame.")
+  }
+  if (!is.data.frame(data)) {
+    if (!requireNamespace("sp")) {
+      stop("data is of class 'SpatialPointsDataFrame', 'SpatialGridDataFrame', 'SpatialPixelsDataFrame', but the sp package isn't installed. Please install the sp package or convert data to a data.frame.")
+    }
+  }
+  if (is.data.frame(data) & is.null(coordnames)) {
+    stop("coordnames must be specified when data is a data.frame")
+  }
+  if (min(is.element(all.vars(formula), names(as.data.frame(data)))) == 0) {
+    stop("some of the variables in formula are not in data")
+  }
+  if (nbins < 1 || length(nbins) != 1 || !is.numeric(nbins)) {
+    stop("nbins should be a single integer >= 1")
+  }
+  if (!is.null(maxd)) {
+    if (maxd <= 0 || length(maxd) != 1 || !is.numeric(maxd))
+      stop("maxd should be a single integer >= 1")
+  }
+  if (length(angle) != 1 || !is.numeric(angle) || angle < 0) {
+    stop("angle should be an single value >= 0")
+  }
+  if (ndir < 1 || length(ndir) != 1 || !is.numeric(ndir)) {
+    stop("ndir should be a single integer >= 1")
+  }
+  if (length(type) != 1) {
+    stop("type should be a single name")
+  }
+  if (!is.element(type, c("standard", "cressie", "cloud"))) {
+    stop(paste(type, "is not a valid type"))
+  }
+  if (npmin < 1 || length(npmin) != 1 || !is.numeric(npmin)) {
+    stop("npmin should be a single integer >= 1")
+  }
+  arg_check_verbose(verbose)
+}
+
+
+

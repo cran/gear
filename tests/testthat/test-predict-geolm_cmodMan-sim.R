@@ -30,8 +30,8 @@ gearmod_uk = geolm(y ~ x1 + x2, data = data,
 newdata = data.frame(x1 = c(x1, runif(5)), x2 = c(x2, runif(5)))
 newcoords = newdata[,c("x1", "x2")]
 # create vop and vp using distances
-dop = sp::spDists(as.matrix(coords), as.matrix(newcoords))
-dp = as.matrix(dist(newcoords))
+dop = geodist(as.matrix(coords), as.matrix(newcoords))
+dp = geodist(newcoords)
 
 vop = psill * exp(-dop/r) + fvar * (dop == 0)
 vp = psill * exp(-dp/r) + fvar * diag(nrow(newcoords))

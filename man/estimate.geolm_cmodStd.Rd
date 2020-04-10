@@ -28,15 +28,15 @@ produced by the \code{geolm} function.}
 
 \item{reml}{A logical value indicating whether standard
 maximum likelihood estimation should be performed
-(\code{reml = FALSE}).  If \code{reml = TRUE}, then the
-restricted maximum likelihood is performed.  The
+(\code{reml = FALSE}).  If \code{reml = TRUE}, then
+restricted maximum likelihood estimation is performed.  The
 default is \code{FALSE}.}
 
 \item{noise_type}{A character vector indicating the type
 of noise (nugget) variance to estimate. The default is
 \code{est = "e"}, indicating the error variance should
 be estimated. Alternatively, the user can specify
-\code{est = "f"}, indicating that the finescale
+\code{est = "f"}, indicating that the finescale (microscale)
 variance should be estimated. The other type of noise
 variance is set to 0, otherwise the model is not
 identifiable. See Details.}
@@ -50,9 +50,9 @@ parameters you wish to set upper bounds for and the
 associated value.}
 
 \item{method}{The optimization method.  The default is
-\code{"nlminb"}, with \code{"L-BFGS-B"} being another
+\code{"nlminb"}. \code{"L-BFGS-B"} is another
 acceptable choice.  See \code{\link[optimx]{optimx}}
-for details.}
+for further choices.}
 
 \item{itnmax}{An integer indicating the maximum number of
 iterations to allow for the optimization procedure.}
@@ -68,7 +68,7 @@ the nugget should be estimated.}
 \item{est_par3}{A logical value indicating whether
 \code{par3} should be estimated (for an appropriate
 covariance model such as \code{"matern"} or
-\code{"amatern"}. The default is \code{TRUE},
+\code{"amatern"}). The default is \code{TRUE},
 indicating that this parameter should be estimated.}
 
 \item{est_angle}{A logical value indicating whether the
@@ -143,7 +143,8 @@ mod_std = cmod_std("exponential", psill = 1, r = 1, evar = 0.1)
 object = geolm(y ~ x1 + x2, data = toydata, mod = mod_std,
                   coordnames = c("x1", "x2"))
 est_object = estimate(object, control = list(trace = 1),
-                      verbose = TRUE)
+                      verbose = TRUE,
+                      lower = list(r = 0.05, lambda = 0.05))
 }
 \seealso{
 \code{\link[gear]{cmod_std}},

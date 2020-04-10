@@ -2,6 +2,7 @@
 
 data(meuse, package = "sp")
 sp::coordinates(meuse) = ~ x + y
+meuse_df = as.data.frame(meuse)[,1:3]
 maxd = max(dist(sp::coordinates(meuse)))/2
 
 # create gstat and geodata objects
@@ -37,7 +38,7 @@ gstat_cloud_maxd2000 = gstat::variogram(gmeuse,
 # save output
 fpath = system.file("testdata",  package = "gear")
 fname = paste(fpath, "/evgram_data.rda", sep = "")
-save(meuse, maxd,
+save(meuse, meuse_df, maxd,
      gstat_v1, gstat_v2, gstat_v3, gstat_v4,
      gstat_v5, gstat_v6, gstat_v7, gstat_v8,
      # geo_cloud,

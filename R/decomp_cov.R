@@ -4,17 +4,17 @@
 #' \code{v}.  If \code{A = decomp_cov(v)}, then
 #' \code{tcrossprod(A, A) == v}.
 #'
-#' The \code{"chol"} method is the fastest, but must
-#' unstable.  The \code{"eigen"} method is slower, but more
+#' The \code{"chol"} method is the fastest but least
+#' stable method.  The \code{"eigen"} method is slower, but more
 #' stable.  The \code{"svd"} method is the slowest method,
 #' but should be the most stable.
 #'
-#' @param v An \eqn{n \times n} covariance matrix.
+#' @param v An \eqn{N \times N} covariance matrix.
 #' @param method The method used to decompose \code{v}.
-#'   valid options are \code{"chol"}, \code{"eigen"}, or
+#'   Valid options are \code{"chol"}, \code{"eigen"}, or
 #'   \code{"svd"}.
 #'
-#' @return Returns an \eqn{n \times n} matrix.
+#' @return Returns an \eqn{N \times N} matrix.
 #'
 #' @author Joshua French
 #' @export
@@ -32,9 +32,9 @@
 #' d3 = decomp_cov(v, "svd")
 #'
 #' # verify accuracy of decompositions
-#' range(v - tcrossprod(d1))
-#' range(v - tcrossprod(d2))
-#' range(v - tcrossprod(d3))
+#' all.equal(v, tcrossprod(d1))
+#' all.equal(v, tcrossprod(d2), check.attributes = FALSE)
+#' all.equal(v, tcrossprod(d3), check.attributes = FALSE)
 decomp_cov <- function(v, method = "eigen") {
   #sanity check
   if (!(is.matrix(v)  || inherits(v, "Matrix"))) {

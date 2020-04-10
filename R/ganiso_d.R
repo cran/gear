@@ -4,7 +4,7 @@
 #' there is geometric anisotropy. This is essentially an
 #' internal function to \code{\link{evaluate}} a
 #' \code{cmodStd} object produced by \code{\link{cmod_std}}
-#' when the \code{ganiso} argument is not \code{NULL}.
+#' when the anisotropy ratio differs from 1.
 #'
 #' @param coords2 An \eqn{M \times 2} matrix of spatial
 #'   coordinates. Is missing, then \code{coords2 = coords1}.
@@ -32,7 +32,7 @@ ganiso_d = function(coords1, coords2, radians = TRUE, invert = TRUE) {
   }
 
   out = vector("list")
-  out$d = sp::spDists(coords1, coords2)
+  out$d = geodist(coords1, coords2)
   out$angles = t(apply(coords1, 1, function(x) {
     angle2d(matrix(x, nrow = nrow(coords2), ncol = 2, byrow = TRUE), coords2, radians = TRUE, invert = invert)
     }))

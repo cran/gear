@@ -22,9 +22,10 @@
 #'   this function and \code{\link[stats]{lm}}.
 #' @param data A data frame containing the response,
 #'   covariates, and location coordinates.
-#' @param coordnames A vector of length 2 with the names of
-#'   the columns in \code{data} containing the coordinates,
-#'   e.g., \code{c("long", "lat")}.
+#' @param coordnames The columns of \code{data} containing
+#'   the spatial coordinates, provided as a formula (e.g.,
+#'   \code{~ x + y}), column numbers (e.g., \code{c(1, 2)}),
+#'   or column names (e.g., \code{c("x", "y")})
 #' @param mod A model object produced by one
 #'   of the \code{cmod_*} functions, e.g.,
 #'   \code{\link[gear]{cmod_std}}.
@@ -40,7 +41,8 @@
 #'   or universal kriging should be used.
 #' @param cmod Retained for backwards compatibility. A model object produced by one
 #'   of the \code{cmod_*} functions, e.g.,
-#'   \code{\link[gear]{cmod_std}}.   
+#'   \code{\link[gear]{cmod_std}}.
+#' @inheritParams evgram
 #' @inheritParams cmod_std
 #'
 #' @return Returns a \code{geolm_*} object, where \code{*}
@@ -51,12 +53,12 @@
 #' @examples
 #' data = data.frame(y = rnorm(10), x1 = runif(10),
 #'                  x2 = runif(10))
-#' d = as.matrix(dist(data[,c("x1", "x2")]))
+#' d = geodist(data[,c("x1", "x2")])
 #' mod = cmod_man(v = exp(-d), evar = 1)
 #' gearmod = geolm(y ~ x1, data = data,
 #'                 coordnames = ~ x1 + x2, mod = mod)
-geolm = function(formula, data, coordnames, 
-                 mod, 
+geolm = function(formula, data, coordnames,
+                 mod,
                  weights = NULL,
                  mu = NULL, longlat = NULL,
                  cmod = NULL) {
@@ -69,24 +71,26 @@ geolm = function(formula, data, coordnames,
     mod$longlat = longlat
     warning("The longlat argument shoud now be specified through the mod object. Please update your code. The longlat argument will be deprecated in the future.")
   }
-  # get correct columns of coordnames is a formula
-  if (class(coordnames) == "formula") {
-    coordnames = labels(stats::terms(coordnames))
-  }
-  arg_check_geolm(formula, data, coordnames, mod, weights, mu)
+  arg_check_geolm(formula, data, mod, weights, mu)
   if (!is.null(longlat)) {
     warning("The longlat argument should now be specified via the appropriate cmod* or vmod* function. Please update your code. The longlat argument in geolm will be depcrecated in the future.")
     arg_check_longlat(longlat)
     message("Attempting to update mode with longlat specificiation")
     mod$longlat = longlat
   }
-  
+
+  # ensure coordinates are available
+  data_colnames = names(data)
+  coordnames = arg_check_coordnames(coordnames, data_colnames)
+  # determine coordinates for observed data
+  coords = as.matrix(data[,coordnames])
+
   # create model frame
   mf = stats::model.frame(formula, data)
   # extract response
   y = c(stats::model.response(mf))
   n = length(y) # number of observations
-  
+
   x = NULL # assume simple kriging
   # if not doing simple kriging
   if (is.null(mu)) {
@@ -100,10 +104,7 @@ geolm = function(formula, data, coordnames,
 
   # create default weights, if NULL
   if (is.null(weights)) weights = rep(1, n)
-  
-  # determine coordinates for observed data
-  coords = as.matrix(data[,coordnames])
-  
+
   geolm_fit(mod = mod, x = x, y = y, coords = coords,
             weights = weights, formula = formula, mu = mu,
             coordnames = coordnames, n = n, call = call,
@@ -126,3 +127,20 @@ geolm = function(formula, data, coordnames,
   # }
 }
 
+# check arguments of geolm
+arg_check_geolm = function(formula, data, mod, weights, mu) {
+  arg_check_geolm_formula(formula)
+  if (!is.data.frame(data)) {
+    stop("data should be a data frame")
+  }
+  valid_mod = c("cmodMan", "cmodStd")
+  if (!is.element(class(mod), valid_mod)) {
+    stop(paste("mod must be of one of the following classes:", paste(valid_mod, collapse = ", ")))
+  }
+  if (!is.null(weights)) {
+    arg_check_weights(weights, nrow(data))
+  }
+  if (!is.null(mu)) {
+    arg_check_mu(mu)
+  }
+}

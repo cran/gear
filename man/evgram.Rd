@@ -37,7 +37,7 @@ or column names (e.g., \code{c("x", "y")}). The default
 is \code{NULL}.}
 
 \item{nbins}{The number of bins (tolerance regions) to
-use when estimating the sample semivariogram.}
+use when estimating the empirical semivariogram.}
 
 \item{maxd}{The maximum distance used when calculating
 the semivariogram.  Default is NULL, in which case half
@@ -48,7 +48,7 @@ starting direction for a directional variogram.  The
 default is 0.}
 
 \item{ndir}{The number of directions for which to
-calculate a sample semivariogram.  The default is 1,
+calculate a empirical semivariogram.  The default is 1,
 meaning calculate an omnidirectional semivariogram.}
 
 \item{type}{The name of the estimator to use in the
@@ -73,31 +73,35 @@ computation information should be printed. Default is
   \code{TRUE}.}
 
 \item{invert}{A logical value indicating whether the axes
-of the coordinates should be inverted (i.e., the x- and y-axis are
-switched). The default is
-\code{TRUE} to mimic results from
-other geostatistical R packages like \code{gstat},
-\code{geoR} or other software like \code{GSLIB} and
-\code{GeoEAS}. Set to \code{FALSE} to use the typical
-x- and y-axis.}
+of the coordinates should be inverted (i.e., the x- and
+y-axis are switched). The default is \code{TRUE} to
+mimic results from other geostatistical R packages like
+\code{gstat}, \code{geoR}, and other software like
+\code{GSLIB} and \code{GeoEAS}. Set to \code{FALSE} to
+use the typical x- and y-axes.}
 }
 \value{
 Returns an \code{evgram}.
 }
 \description{
-\code{evgram} computes the empirical semivariogram. The
-variogram is twice the semivariogram.
+\code{evgram} computes the empirical semivariogram of
+\code{data} based on the specified \code{formula}
+indicating the response and trend. See Details. The
+variogram is twice the semivariogram. If a trend is
+specified, then the semivariogram is constructed using
+the residuals of \code{lm(formula, data)}.
 }
 \details{
 Note that the directions may be different from other
 packages (e.g., \code{gstat} or \code{geoR} packages)
 because those packages calculate angles clockwise from
 the y-axis, which is a convention frequently seen in
-geostatistics (e.g., the GSLIB software library).
+geostatistics (e.g., the GSLIB software library). If
+\code{invert = TRUE}, the directions should be the same.
 
 Computing the empirical semivariogram for the residuals
 of \code{lm(response ~ 1)} will produce identical results
-to simply computing the sample semivariogram from the
+to simply computing the empirical semivariogram from the
 original response. However, if a trend is specified (the
 righthand side of ~ has non-trival covariates), then the
 empirical semivariogram of the residuals will differ

@@ -8,10 +8,10 @@
 #'
 #' Note that \code{v} includes the error variance, i.e.,
 #' \code{v = vz + ve}, where \code{vz} is the covariance
-#' matrix of the filtered process, and the variance matrix
+#' matrix of the filtered process and the variance matrix
 #' of the errors is \code{ve = diag(evar/weights)}, where
-#' the weights come from the \code{geolm} object the
-#' covariance object is associated with.
+#' the \code{weights} come from the \code{geolm} object the
+#' \code{cmodMan} object is associated with.
 #'
 #' @inheritParams cmod_man
 #'

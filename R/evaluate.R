@@ -9,8 +9,8 @@
 #' covariance function.
 #'
 #' @param mod A covariance or semivariogram model.
-#' @param d An \eqn{n \times m} matrix of distances. 
-#' If \code{mod$ratio != !}, i.e., if geometric anisotropy
+#' @param d An \eqn{n \times m} matrix of distances.
+#' If \code{mod$ratio != 1}, i.e., if geometric anisotropy
 #' has been specified, then \code{d} must be produced by the
 #' \code{\link[gear]{ganiso_d}} function.
 #' @param e A single logical value indicating whether the
@@ -19,7 +19,7 @@
 #' @param f A single logical value indicating whether the
 #'   finescale/microscale variance should be added to the
 #'   returned covariance matrix.  Default is \code{TRUE}.
-#' 
+#'
 #' @return Returns the evaluated model with necessary
 #'   components needed for \code{\link[gear]{estimate}} and
 #'   \code{\link{predict}}.

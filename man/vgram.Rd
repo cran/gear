@@ -24,8 +24,8 @@ vgram(
 
 \item{data}{A \code{data.frame}, \code{SpatialPointsDataFrame}, \code{SpatialPixelsDataFrame}, or \code{SpatialGridDataFrame} object.}
 
-\item{coordnames}{The columns of \code{data} containing the spatial coordinates, 
-provided as a formula (e.g., ~ x + y), 
+\item{coordnames}{The columns of \code{data} containing the spatial coordinates,
+provided as a formula (e.g., ~ x + y),
 column numbers (e.g., c(1, 2)), or column names (e.g., c("x", "y")).
 The default is NULL, but this must be specified if \code{data} is of class \code{data.frame}.}
 
@@ -52,22 +52,22 @@ Returns an \code{evgram} object with components:
 }
 \description{
 \code{vgram} calculates an empirical variogram.  Note that, by convention,
-the empirical variogram actually estimates the semivariogram, not the 
+the empirical variogram actually estimates the semivariogram, not the
 theoretical variogram (which is twice the semivariogram).
 }
 \details{
-Note that the directions may be different from other packages 
-(e.g., \code{gstat} or \code{geoR} packages) because those 
-packages calculate angles clockwise from the y-axis, which is 
-a convention frequently seen in geostatistics 
+Note that the directions may be different from other packages
+(e.g., \code{gstat} or \code{geoR} packages) because those
+packages calculate angles clockwise from the y-axis, which is
+a convention frequently seen in geostatistics
 (e.g., the GSLIB software library).
 
-Additionally, note that calculating the empirical variogram for 
-the residuals of lm(response ~ 1) will produce identical results 
-to simply computing the sample semivariogram from the original response.  
-However, if a trend is specified (the righthand side of ~ has non-trival 
-covariates), then the empirical variogram of the residuals will differ 
-from that of the original response.  A trend should be specified when 
+Additionally, note that calculating the empirical variogram for
+the residuals of lm(response ~ 1) will produce identical results
+to simply computing the sample semivariogram from the original response.
+However, if a trend is specified (the righthand side of ~ has non-trival
+covariates), then the empirical variogram of the residuals will differ
+from that of the original response.  A trend should be specified when
 the mean is non-stationary over the spatial domain.
 }
 \examples{

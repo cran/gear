@@ -7,21 +7,24 @@
 ganiso_d(coords1, coords2, radians = TRUE, invert = TRUE)
 }
 \arguments{
-\item{coords1}{An \eqn{N \times 2} matrix of spatial coordinates.}
+\item{coords1}{An \eqn{N \times 2} matrix of spatial
+coordinates.}
 
 \item{coords2}{An \eqn{M \times 2} matrix of spatial
 coordinates. Is missing, then \code{coords2 = coords1}.}
 
-\item{radians}{A logical value indicating whether degrees or radians should be returned.  Default is FALSE, meaning return angle in degrees.}
+\item{radians}{A logical value indicating whether the
+angles returned should be in degrees or radians.  The
+default is \code{FALSE}, indicating that the returned
+angles are in degrees.}
 
 \item{invert}{A logical value indicating whether the axes
-of the coordinates should be inverted (i.e., the x- and y-axis are
-switched). The default is
-\code{TRUE} to mimic results from
-other geostatistical R packages like \code{gstat},
-\code{geoR} or other software like \code{GSLIB} and
-\code{GeoEAS}. Set to \code{FALSE} to use the typical
-x- and y-axis.}
+of the coordinates should be inverted (i.e., the x- and
+y-axis are switched). The default is \code{TRUE} to
+mimic results from other geostatistical R packages like
+\code{gstat}, \code{geoR}, and other software like
+\code{GSLIB} and \code{GeoEAS}. Set to \code{FALSE} to
+use the typical x- and y-axes.}
 }
 \value{
 A \code{ganisoD} object with components \code{d}
@@ -34,7 +37,7 @@ Computes necessary distance-related characteristics when
 there is geometric anisotropy. This is essentially an
 internal function to \code{\link{evaluate}} a
 \code{cmodStd} object produced by \code{\link{cmod_std}}
-when the \code{ganiso} argument is not \code{NULL}.
+when the anisotropy ratio differs from 1.
 }
 \examples{
 ganiso_d(cbind(0, 0), cbind(1, 1))
